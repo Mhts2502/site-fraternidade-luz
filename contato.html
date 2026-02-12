@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="pt-br" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Início - Fraternidade da Luz</title>
+    
+    <link rel="apple-touch-icon" sizes="180x180" href="assets/img/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="assets/img/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="assets/img/favicon-16x16.png">
+    <link rel="manifest" href="assets/img/site.webmanifest">
+    <link rel="shortcut icon" href="assets/img/favicon.ico">
+    <meta name="theme-color" content="#1e3a8a">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { 
+                        sans: ['Outfit', 'sans-serif'],
+                        serif: ['Playfair Display', 'serif'] 
+                    },
+                    colors: {
+                        brand: {
+                            blue: '#1e3a8a', 
+                            gold: '#c4a469', 
+                            light: '#fdfbf7',
+                            softblue: '#e0e7ff',
+                            bordeaux: '#800000', /* Vermelho Xangô */
+                            brown: '#78350f',    /* Marrom Terra */
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        .nav-bg { background-color: #1e3a8a; border-bottom: 4px solid #c4a469; }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        
+        /* Borda preta nas letras */
+        .text-stroke-black { 
+            -webkit-text-stroke: 1.5px black; 
+            text-stroke: 1.5px black; 
+            text-shadow: 2px 2px 0px rgba(0,0,0,0.2); 
+        }
+
+        /* Animação SWUP (Fluidez) */
+        .transition-fade {
+            transition: 0.4s ease-out;
+            opacity: 1;
+            transform: translateY(0);
+            filter: blur(0);
+        }
+        html.is-animating .transition-fade {
+            opacity: 0;
+            transform: translateY(15px);
+            filter: blur(5px);
+        }
+        html.is-changing { cursor: wait; }
+    </style>
+</head>
+<body class="bg-brand-light text-gray-800 antialiased flex flex-col min-h-screen">
+
+    <nav class="fixed w-full z-50 top-0 nav-bg shadow-md">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex justify-between items-center h-28"> 
+            
+            <a href="index.html" class="flex items-center gap-4 group">
+                <img src="assets/img/logo.jpg" alt="Logo Fraternidade" class="w-20 h-20 rounded-full shadow-lg border-2 border-brand-gold/20 transition transform group-hover:scale-105 duration-500 object-cover">
+                <div class="flex flex-col justify-center">
+                    <span class="text-brand-gold text-[10px] md:text-xs font-bold tracking-[0.15em] uppercase mb-0.5">Grupo Socorrista</span>
+                    <span class="font-bold text-lg md:text-2xl text-white tracking-wide leading-none font-serif">Fraternidade da Luz</span>
+                </div>
+            </a>
+            
+            <div class="hidden md:flex space-x-8 items-center">
+                <a href="index.html" class="text-white hover:text-brand-gold transition duration-300 font-medium text-sm tracking-wide">INÍCIO</a>
+                <a href="sobre.html" class="text-white hover:text-brand-gold transition duration-300 font-medium text-sm tracking-wide">SOBRE NÓS</a>
+                <a href="conteudos.html" class="text-white hover:text-brand-gold transition duration-300 font-medium text-sm tracking-wide">ESTUDOS</a>
+                <a href="terapias.html" class="text-white hover:text-brand-gold transition duration-300 font-medium text-sm tracking-wide">TRABALHOS E TRATAMENTOS</a>
+                <a href="agendamentos.html" class="text-white hover:text-brand-gold transition duration-300 font-medium text-sm tracking-wide">AGENDAMENTOS</a>
+                <a href="contato.html" class="text-white hover:text-brand-gold transition duration-300 font-medium text-sm tracking-wide">CONTATO</a>
+            </div>
+
+            <button id="mobile-menu-btn" class="md:hidden text-brand-gold hover:text-white focus:outline-none p-2 relative z-50 transition-transform duration-500 ease-in-out">
+                <i data-lucide="menu" class="w-8 h-8 block" id="icon-menu"></i>
+                <i data-lucide="x" class="w-8 h-8 hidden" id="icon-close"></i>
+            </button>
+        </div>
+    </div>
+
+    <div id="mobile-menu" class="hidden md:hidden bg-brand-blue border-t border-brand-gold/30 absolute w-full left-0 top-28 shadow-2xl z-40 origin-top animate-fade-in">
+        <div class="px-6 pt-6 pb-8 space-y-4 flex flex-col">
+            <a href="index.html" class="block text-white hover:text-brand-gold font-medium border-b border-white/10 pb-2">INÍCIO</a>
+            <a href="sobre.html" class="block text-white hover:text-brand-gold font-medium border-b border-white/10 pb-2">SOBRE NÓS</a>
+            <a href="conteudos.html" class="block text-white hover:text-brand-gold font-medium border-b border-white/10 pb-2">ESTUDOS</a>
+            <a href="terapias.html" class="block text-white hover:text-brand-gold font-medium border-b border-white/10 pb-2">TRABALHOS E TRATAMENTOS</a>
+            <a href="agendamentos.html" class="block text-white hover:text-brand-gold font-medium border-b border-white/10 pb-2">AGENDAMENTOS</a>
+            <a href="contato.html" class="block text-white hover:text-brand-gold font-medium border-b border-white/10 pb-2">CONTATO</a>
+        </div>
+    </div>
+</nav>
+
+<main id="swup" class="transition-fade pt-36 pb-20 px-4 flex-grow flex flex-col">
+    
+    <div class="text-center mb-12">
+        <h1 class="text-4xl font-serif font-bold text-brand-blue mb-4">Fale Conosco</h1>
+    </div>
+
+    <div class="max-w-6xl mx-auto grid md:grid-cols-2 gap-8">
+
+        <div class="bg-white rounded-3xl p-8 shadow-lg border-2 border-brand-blue/10 flex flex-col h-full hover:shadow-xl transition duration-300">
+            
+            <div class="flex items-center gap-4 mb-6">
+                <div class="w-14 h-14 bg-brand-gold/10 rounded-full flex items-center justify-center text-brand-gold">
+                    <i data-lucide="map-pin" class="w-7 h-7"></i>
+                </div>
+                <div>
+                    <h3 class="text-xl font-bold text-brand-blue">Onde Estamos?</h3>
+                </div>
+            </div>
+
+            <div class="space-y-4 text-gray-600 mb-6">
+                <p class="leading-relaxed">
+                    <strong>Rua Alaíde, 307</strong><br>
+                    Cordeiro<br>
+                    Recife - PE, 50721-080
+                </p>
+                <p class="text-sm bg-blue-50 p-3 rounded-lg text-brand-blue border border-blue-100">
+                    <i data-lucide="info" class="w-4 h-4 inline mr-1"></i>
+                    Ponto de referência: Próximo à Avenida Caxangá.
+                </p>
+            </div>
+
+            <div class="w-full h-64 bg-gray-100 rounded-xl overflow-hidden mb-6 border border-gray-200 shadow-inner">
+                <iframe 
+                    src="https://maps.google.com/maps?q=Rua%20Ala%C3%ADde%2C%20307%20-%20Cordeiro%2C%20Recife%20-%20PE&t=&z=15&ie=UTF8&iwloc=&output=embed" 
+                    width="100%" 
+                    height="100%" 
+                    style="border:0;" 
+                    allowfullscreen="" 
+                    loading="lazy">
+                </iframe>
+            </div>
+
+            <a href="https://www.google.com/maps/search/?api=1&query=Rua+Alaide+307+Cordeiro+Recife+PE" target="_blank" class="mt-auto w-full py-4 rounded-xl border-2 border-brand-blue text-brand-blue font-bold hover:bg-brand-blue hover:text-white transition flex items-center justify-center gap-2">
+                <i data-lucide="map" class="w-5 h-5"></i>
+                ABRIR NO GOOGLE MAPS
+            </a>
+        </div>
+
+        <div class="bg-white rounded-3xl p-8 shadow-lg border border-gray-100 flex flex-col h-full hover:shadow-xl transition duration-300">
+            
+            <div class="flex items-center gap-4 mb-8">
+                <div class="w-14 h-14 bg-brand-blue/10 rounded-full flex items-center justify-center text-brand-blue">
+                    <i data-lucide="message-circle" class="w-7 h-7"></i>
+                </div>
+                <div>
+                    <h3 class="text-xl font-bold text-brand-blue">Nossos Canais</h3>
+                    <p class="text-sm text-gray-500">Interaja conosco nas redes</p>
+                </div>
+            </div>
+
+            <div class="flex flex-col gap-4">
+                
+                <a href="https://api.whatsapp.com/message/B2BBNVXVBGCKD1?autoload=1&app_absent=0" target="_blank" class="flex items-center gap-4 p-4 rounded-xl bg-green-50 border border-green-100 hover:bg-green-100 transition group">
+                    <div class="bg-green-500 text-white p-2 rounded-full group-hover:scale-110 transition">
+                        <i data-lucide="message-circle" class="w-6 h-6"></i>
+                    </div>
+                    <div>
+                        <span class="block font-bold text-green-800">WhatsApp Oficial</span>
+                        <span class="text-xs text-green-600">Tire dúvidas e receba orientações</span>
+                    </div>
+                </a>
+
+                <a href="https://www.instagram.com/gsfraternidadedaluz/" target="_blank" class="flex items-center gap-4 p-4 rounded-xl bg-pink-50 border border-pink-100 hover:bg-pink-100 transition group">
+                    <div class="bg-gradient-to-tr from-yellow-500 via-red-500 to-purple-500 text-white p-2 rounded-full group-hover:scale-110 transition">
+                        <i data-lucide="instagram" class="w-6 h-6"></i>
+                    </div>
+                    <div>
+                        <span class="block font-bold text-pink-900">Instagram</span>
+                        <span class="text-xs text-pink-600">Acompanhe nosso dia a dia</span>
+                    </div>
+                </a>
+
+                <a href="https://www.facebook.com/groups/126930474589655/" target="_blank" class="flex items-center gap-4 p-4 rounded-xl bg-blue-50 border border-blue-100 hover:bg-blue-100 transition group">
+                    <div class="bg-blue-600 text-white p-2 rounded-full group-hover:scale-110 transition">
+                        <i data-lucide="facebook" class="w-6 h-6"></i>
+                    </div>
+                    <div>
+                        <span class="block font-bold text-blue-900">Facebook</span>
+                        <span class="text-xs text-blue-600">Participe da nossa comunidade</span>
+                    </div>
+                </a>
+
+                <a href="mailto:gsfraternidadedaluz@gmail.com" class="flex items-center gap-4 p-4 rounded-xl bg-gray-50 border border-gray-100 hover:bg-gray-100 transition group">
+                    <div class="bg-gray-600 text-white p-2 rounded-full group-hover:scale-110 transition">
+                        <i data-lucide="mail" class="w-6 h-6"></i>
+                    </div>
+                    <div>
+                        <span class="block font-bold text-gray-800">E-mail</span>
+                        <span class="text-xs text-gray-600">gsfraternidadedaluz@gmail.com</span>
+                    </div>
+                </a>
+
+            </div>
+        </div>
+
+    </div>
+</main>
+
+    <footer class="bg-brand-blue text-white py-6 mt-auto border-t-4 border-brand-gold/80">
+        <div class="max-w-7xl mx-auto px-4 flex flex-col md:flex-row justify-between items-center gap-6">
+            
+            <div class="flex items-center gap-5">
+                <img src="assets/img/logo.jpg" alt="Logo Fraternidade" class="w-28 h-28 rounded-full shadow-2xl border-2 border-brand-gold/50 object-cover hover:scale-105 transition duration-500">
+                
+                <div class="flex flex-col">
+                    <span class="text-brand-gold/80 text-xs font-bold tracking-[0.2em] uppercase mb-1">Grupo Socorrista</span>
+                    <span class="text-white text-2xl font-bold tracking-wide leading-none font-serif">Fraternidade da Luz</span>
+                    <span class="text-white/40 text-[10px] mt-2 font-light tracking-wider">Cuidando do corpo e da alma desde 2017</span>
+                </div>
+            </div>
+
+            <div class="flex flex-col items-center md:items-end gap-4">
+                
+                <div class="flex gap-6">
+                    <a href="https://www.instagram.com/gsfraternidadedaluz/" target="_blank" class="text-white/60 hover:text-brand-gold transition transform hover:scale-110"><i data-lucide="instagram" class="w-6 h-6"></i></a>
+                    <a href="https://www.facebook.com/groups/126930474589655/" target="_blank" class="text-white/60 hover:text-brand-gold transition transform hover:scale-110"><i data-lucide="facebook" class="w-6 h-6"></i></a>
+                    <a href="mailto:gsfraternidadedaluz@gmail.com" class="text-white/60 hover:text-brand-gold transition transform hover:scale-110"><i data-lucide="mail" class="w-6 h-6"></i></a>
+                    <a href="https://api.whatsapp.com/message/B2BBNVXVBGCKD1?autoload=1&app_absent=0" target="_blank" class="text-green-400 hover:text-green-300 transition transform hover:scale-110"><i data-lucide="message-circle" class="w-6 h-6"></i></a>
+
+                <p class="text-xs text-white/20 font-light text-right">
+                    © 2024 Todos os direitos reservados.<br>
+                    <span class="opacity-50">Recife - PE</span>
+                </p>
+            </div>
+
+        </div>
+    </footer>
+<script src="https://unpkg.com/swup@4"></script>
+
+<script>
+    function initApp() {
+        // 1. Recria ícones
+        if(window.lucide) lucide.createIcons();
+        
+        // 2. Marca link ativo na Nav
+        const path = window.location.pathname;
+        const page = path.split("/").pop() || 'index.html';
+        
+        document.querySelectorAll('nav a').forEach(link => {
+            if (link.querySelector('img')) return;
+            
+            link.classList.remove('text-brand-gold', 'border-b-2', 'border-brand-gold', 'pb-1');
+            link.classList.add('text-white');
+            
+            const href = link.getAttribute('href');
+            if (href && (href === page || (page === '' && href === 'index.html'))) {
+                link.classList.add('text-brand-gold', 'border-b-2', 'border-brand-gold', 'pb-1');
+                link.classList.remove('text-white');
+            }
+        });
+
+        // 3. Lógica do Menu Mobile (CORRIGIDA)
+        const btn = document.getElementById('mobile-menu-btn');
+        const menu = document.getElementById('mobile-menu');
+        
+        if(btn && menu) {
+            // Clona o botão para limpar eventos antigos
+            const newBtn = btn.cloneNode(true);
+            btn.parentNode.replaceChild(newBtn, btn);
+            
+            // Seleciona os ícones DENTRO do novo botão
+            // Usamos querySelector para garantir que pegamos os elementos certos
+            const iconMenu = newBtn.querySelector('[data-lucide="menu"]'); 
+            const iconClose = newBtn.querySelector('[data-lucide="x"]');
+
+            // --- FUNÇÃO CENTRAL DE FECHAR (FAZ TUDO) ---
+            const closeMenu = () => {
+                // 1. Esconde a gaveta
+                menu.classList.add('hidden');
+                
+                // 2. Gira o botão de volta para a direita (posição original)
+                newBtn.classList.remove('-rotate-180'); 
+                
+                // 3. Troca o X pelo Hambúrguer
+                if(iconClose) iconClose.classList.add('hidden');
+                if(iconMenu) iconMenu.classList.remove('hidden');
+            };
+
+            // --- FUNÇÃO CENTRAL DE ABRIR ---
+            const openMenu = () => {
+                menu.classList.remove('hidden');
+                newBtn.classList.add('-rotate-180'); // Gira para esquerda
+                if(iconMenu) iconMenu.classList.add('hidden');
+                if(iconClose) iconClose.classList.remove('hidden');
+            };
+
+            // Evento 1: Clique no Botão
+            newBtn.addEventListener('click', (e) => {
+                e.stopPropagation(); // Impede que o clique conte como "clique fora"
+                const isOpen = !menu.classList.contains('hidden');
+                
+                if (isOpen) {
+                    closeMenu();
+                } else {
+                    openMenu();
+                }
+            });
+
+            // Evento 2: Clique Fora (No documento)
+            // Removemos listener anterior para não duplicar
+            if (window.clickOutsideHandler) {
+                document.removeEventListener('click', window.clickOutsideHandler);
+            }
+
+            window.clickOutsideHandler = (e) => {
+                // Se o menu estiver ABERTO... E o clique NÃO for no menu... E NÃO for no botão...
+                if (!menu.classList.contains('hidden') && !menu.contains(e.target) && !newBtn.contains(e.target)) {
+                    closeMenu(); // <--- CHAMA A FUNÇÃO QUE GIRA O ÍCONE DE VOLTA
+                }
+            };
+
+            document.addEventListener('click', window.clickOutsideHandler);
+        }
+    }
+
+    const swup = new Swup({
+        containers: ["#swup"],
+        animateHistoryBrowsing: true
+    });
+
+    initApp();
+
+    swup.hooks.on('content:replace', () => {
+        initApp();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+</script>
+</body>
+</html>

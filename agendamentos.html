@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="pt-br" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Início - Fraternidade da Luz</title>
+    
+    <link rel="apple-touch-icon" sizes="180x180" href="assets/img/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="assets/img/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="assets/img/favicon-16x16.png">
+    <link rel="manifest" href="assets/img/site.webmanifest">
+    <link rel="shortcut icon" href="assets/img/favicon.ico">
+    <meta name="theme-color" content="#1e3a8a">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { 
+                        sans: ['Outfit', 'sans-serif'],
+                        serif: ['Playfair Display', 'serif'] 
+                    },
+                    colors: {
+                        brand: {
+                            blue: '#1e3a8a', 
+                            gold: '#c4a469', 
+                            light: '#fdfbf7',
+                            softblue: '#e0e7ff',
+                            bordeaux: '#800000', /* Vermelho Xangô */
+                            brown: '#78350f',    /* Marrom Terra */
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        .nav-bg { background-color: #1e3a8a; border-bottom: 4px solid #c4a469; }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        
+        /* Borda preta nas letras */
+        .text-stroke-black { 
+            -webkit-text-stroke: 1.5px black; 
+            text-stroke: 1.5px black; 
+            text-shadow: 2px 2px 0px rgba(0,0,0,0.2); 
+        }
+
+        /* Animação SWUP (Fluidez) */
+        .transition-fade {
+            transition: 0.4s ease-out;
+            opacity: 1;
+            transform: translateY(0);
+            filter: blur(0);
+        }
+        html.is-animating .transition-fade {
+            opacity: 0;
+            transform: translateY(15px);
+            filter: blur(5px);
+        }
+        html.is-changing { cursor: wait; }
+    </style>
+</head>
+<body class="bg-brand-light text-gray-800 antialiased flex flex-col min-h-screen">
+
+   <nav class="fixed w-full z-50 top-0 nav-bg shadow-md">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex justify-between items-center h-28"> 
+            
+            <a href="index.html" class="flex items-center gap-4 group">
+                <img src="assets/img/logo.jpg" alt="Logo Fraternidade" class="w-20 h-20 rounded-full shadow-lg border-2 border-brand-gold/20 transition transform group-hover:scale-105 duration-500 object-cover">
+                <div class="flex flex-col justify-center">
+                    <span class="text-brand-gold text-[10px] md:text-xs font-bold tracking-[0.15em] uppercase mb-0.5">Grupo Socorrista</span>
+                    <span class="font-bold text-lg md:text-2xl text-white tracking-wide leading-none font-serif">Fraternidade da Luz</span>
+                </div>
+            </a>
+            
+            <div class="hidden md:flex space-x-8 items-center">
+                <a href="index.html" class="text-white hover:text-brand-gold transition duration-300 font-medium text-sm tracking-wide">INÍCIO</a>
+                <a href="sobre.html" class="text-white hover:text-brand-gold transition duration-300 font-medium text-sm tracking-wide">SOBRE NÓS</a>
+                <a href="conteudos.html" class="text-white hover:text-brand-gold transition duration-300 font-medium text-sm tracking-wide">ESTUDOS</a>
+                <a href="terapias.html" class="text-white hover:text-brand-gold transition duration-300 font-medium text-sm tracking-wide">TRABALHOS E TRATAMENTOS</a>
+                <a href="agendamentos.html" class="text-white hover:text-brand-gold transition duration-300 font-medium text-sm tracking-wide">AGENDAMENTOS</a>
+                <a href="contato.html" class="text-white hover:text-brand-gold transition duration-300 font-medium text-sm tracking-wide">CONTATO</a>
+            </div>
+
+            <button id="mobile-menu-btn" class="md:hidden text-brand-gold hover:text-white focus:outline-none p-2 relative z-50 transition-transform duration-500 ease-in-out">
+                <i data-lucide="menu" class="w-8 h-8 block" id="icon-menu"></i>
+                <i data-lucide="x" class="w-8 h-8 hidden" id="icon-close"></i>
+            </button>
+        </div>
+    </div>
+
+    <div id="mobile-menu" class="hidden md:hidden bg-brand-blue border-t border-brand-gold/30 absolute w-full left-0 top-28 shadow-2xl z-40 origin-top animate-fade-in">
+        <div class="px-6 pt-6 pb-8 space-y-4 flex flex-col">
+            <a href="index.html" class="block text-white hover:text-brand-gold font-medium border-b border-white/10 pb-2">INÍCIO</a>
+            <a href="sobre.html" class="block text-white hover:text-brand-gold font-medium border-b border-white/10 pb-2">SOBRE NÓS</a>
+            <a href="conteudos.html" class="block text-white hover:text-brand-gold font-medium border-b border-white/10 pb-2">ESTUDOS</a>
+            <a href="terapias.html" class="block text-white hover:text-brand-gold font-medium border-b border-white/10 pb-2">TRABALHOS E TRATAMENTOS</a>
+            <a href="agendamentos.html" class="block text-white hover:text-brand-gold font-medium border-b border-white/10 pb-2">AGENDAMENTOS</a>
+            <a href="contato.html" class="block text-white hover:text-brand-gold font-medium border-b border-white/10 pb-2">CONTATO</a>
+        </div>
+    </div>
+</nav>
+
+<main id="swup" class="transition-fade pt-36 pb-20 px-4 flex-grow flex flex-col">
+        <div class="max-w-5xl mx-auto space-y-10">
+            
+            <div class="text-center mb-10">
+                <div class="w-16 h-1 bg-brand-gold mx-auto mb-6 rounded-full opacity-60"></div>
+                <h1 class="text-4xl font-serif text-brand-blue tracking-tight">Agendamento Fraterno</h1>
+                <p class="text-gray-600 mt-4 max-w-xl mx-auto font-light">
+                    Escolha o caminho de auxílio que seu coração busca. Verifique abaixo nossas normas e opções de atendimento.
+                </p>
+            </div>
+
+            <section class="w-full">
+                <div style="background-color: #ffebee; border: 2px solid #d32f2f; border-radius: 8px; padding: 25px; width: 100%; box-sizing: border-box; font-family: Arial, sans-serif; color: #b71c1c;">
+                  <h2 style="margin-top: 0; display: flex; align-items: center; color: #c62828; text-transform: uppercase;">
+                    <span style="font-size: 24px; margin-right: 10px;">🚫</span> PROIBIDO
+                  </h2>
+                  <p style="font-weight: bold; font-size: 1.1em; border-bottom: 1px solid #e57373; padding-bottom: 10px; margin-bottom: 15px;">
+                    REGRAS DE VESTIMENTA E CONDUTA
+                  </p>
+                  <p>Para garantir o acesso e a permanência no local, <strong>NÃO É PERMITIDO</strong>:</p>
+                  <ul style="list-style-type: none; padding: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 10px;">
+                    <li style="background-color: #ffcdd2; padding: 10px; border-radius: 4px; display: flex; align-items: center;">
+                      <span style="margin-right: 8px;">👕</span> Trajar bermudas, shorts ou calças curtas
+                    </li>
+                    <li style="background-color: #ffcdd2; padding: 10px; border-radius: 4px; display: flex; align-items: center;">
+                      <span style="margin-right: 8px;">🎽</span> Trajar camisetas regata, sem manga ou decotadas
+                    </li>
+                    <li style="background-color: #ffcdd2; padding: 10px; border-radius: 4px; display: flex; align-items: center;">
+                      <span style="margin-right: 8px;">👙</span> Trajar roupas de banho ou transparentes
+                    </li>
+                    <li style="background-color: #ffcdd2; padding: 10px; border-radius: 4px; display: flex; align-items: center; font-weight: bold;">
+                      <span style="margin-right: 8px;">🚭</span> Fumar no local (cigarros, vapes ou assemelhados)
+                    </li>
+                    <li style="background-color: #ffcdd2; padding: 10px; border-radius: 4px; display: flex; align-items: center; font-weight: bold;">
+                      <span style="margin-right: 8px;">📵</span> Toque de aparelho celular
+                    </li>
+                  </ul>
+                  <p style="margin-bottom: 0; font-size: 0.9em; border-top: 1px solid #e57373; padding-top: 10px; margin-top: 15px;">
+                    <strong>⚠️ ATENÇÃO:</strong> O descumprimento destas normas impedirá o acesso ou a permanência no recinto.
+                  </p>
+                </div>
+            </section>
+
+            <section id="psicologia" class="scroll-mt-36 bg-white rounded-3xl overflow-hidden shadow-sm border-2 border-brand-blue/50 flex flex-col md:flex-row relative transition duration-500 hover:shadow-md group">
+    
+    <div class="absolute top-0 right-0 bg-brand-blue text-white text-[11px] font-bold px-4 py-2 rounded-bl-xl uppercase tracking-wider">
+        Agendamento Direto
+    </div>
+                <div class="p-10 md:w-2/5 flex flex-col justify-center items-center text-center border-b md:border-b-0 md:border-r border-brand-blue/10 bg-blue-50/30">
+                    <div class="w-24 h-24 bg-white rounded-full flex items-center justify-center mb-6 shadow-sm border border-blue-100 group-hover:scale-105 transition duration-500">
+                        <i data-lucide="brain" class="w-12 h-12 text-brand-blue/80"></i>
+                    </div>
+                    <h2 class="text-3xl font-bold text-brand-blue">Psicologia</h2>
+                    <p class="text-brand-blue/60 text-sm font-semibold uppercase tracking-widest mt-2">Clareza Mental</p>
+                </div>
+                <div class="p-10 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-xl font-bold mb-4 text-brand-blue">Acolhimento e Escuta</h3>
+                    <p class="text-gray-600 mb-8 leading-relaxed font-medium">
+                        Atendimento profissional com psicólogos voluntários. Um espaço seguro para suas questões emocionais.
+                        <br><span class="font-bold text-brand-blue">Não exige foto Kirlian.</span>
+                    </p>
+                    <button onclick="alert('Aqui abrirá o Chatbot para Psicologia')" class="px-8 py-4 bg-white border-2 border-brand-blue text-brand-blue rounded-full hover:bg-brand-blue hover:text-white transition duration-300 w-full md:w-auto self-start text-sm font-bold tracking-wide flex items-center gap-3 shadow-sm">
+                        VER HORÁRIOS DISPONÍVEIS <i data-lucide="calendar" class="w-5 h-5"></i>
+                    </button>
+                </div>
+            </section>
+
+            <section id="kirlian" class="bg-gradient-to-br from-[#2e0249] to-[#1e3a8a] rounded-3xl overflow-hidden shadow-xl relative flex flex-col md:flex-row text-white scroll-mt-36">
+                <div class="p-8 md:p-10 md:w-3/5 relative z-10 flex flex-col justify-center">
+                    <div class="flex items-center gap-2 mb-4 text-mystic-glow">
+                        <i data-lucide="sparkles" class="w-5 h-5"></i>
+                        <span class="text-xs font-bold uppercase tracking-widest">Procedimento Obrigatório</span>
+                    </div>
+                    <h3 class="text-3xl font-bold mb-4 tracking-tight">Bioeletrografia</h3>
+                    <p class="text-blue-100 mb-8 leading-relaxed font-light text-lg">
+                        Diagnóstico do seu campo energético necessário para iniciar os tratamentos.
+                        <br><span class="text-mystic-glow font-bold text-xl mt-2 block">Taxa única de R$ 10,00.</span>
+                    </p>
+                    <div class="bg-black/30 p-6 rounded-xl mb-8 border border-white/10 backdrop-blur-md shadow-inner">
+                        <ul class="text-sm space-y-3 font-medium">
+                            <li class="flex items-center gap-3">
+                                <i data-lucide="calendar-clock" class="w-5 h-5 text-mystic-glow"></i> 
+                                <span>Abertura: Toda <strong>Quarta-feira</strong>.</span>
+                            </li>
+                            <li class="flex items-center gap-3">
+                                <i data-lucide="users-2" class="w-5 h-5 text-mystic-glow"></i> 
+                                <span>Vagas: Limitadas a <strong>30 pessoas por quarta-feira</strong>.</span>
+                            </li>
+                        </ul>
+                    </div>
+                    <button onclick="alert('Aqui abrirá o Chatbot da Fila')" class="px-8 py-4 bg-gradient-to-r from-mystic-mid to-mystic-deep hover:from-mystic-glow hover:to-mystic-mid transition-all duration-500 text-white rounded-full w-full shadow-lg text-sm font-bold tracking-wide flex items-center justify-center gap-3 transform hover:-translate-y-0.5 border border-mystic-glow/30">
+                        AGENDAR FOTO KIRLIAN <i data-lucide="arrow-right" class="w-5 h-5"></i>
+                    </button>
+                </div>
+                <div class="md:w-2/5 relative min-h-[300px] md:min-h-full">
+                    <div class="absolute inset-0 w-full h-full bg-mystic-deep/20 flex items-center justify-center">
+                         <img src="assets/img/kirlian-destaque.jpeg" alt="Bioeletrografia" class="absolute inset-0 w-full h-full object-cover">
+                    </div>
+                </div>
+            </section>
+
+        </div>
+    </main>
+
+    <footer class="bg-brand-blue text-white py-6 mt-auto border-t-4 border-brand-gold/80">
+        <div class="max-w-7xl mx-auto px-4 flex flex-col md:flex-row justify-between items-center gap-6">
+            <div class="flex items-center gap-5">
+                <img src="assets/img/logo.jpg" alt="Logo Fraternidade" class="w-28 h-28 rounded-full shadow-2xl border-2 border-brand-gold/50 object-cover hover:scale-105 transition duration-500">
+                <div class="flex flex-col">
+                    <span class="text-brand-gold/80 text-xs font-bold tracking-[0.2em] uppercase mb-1">Grupo Socorrista</span>
+                    <span class="text-white text-2xl font-bold tracking-wide leading-none font-serif">Fraternidade da Luz</span>
+                    <span class="text-white/40 text-[10px] mt-2 font-light tracking-wider">Cuidando do corpo e da alma desde 2017</span>
+                </div>
+            </div>
+            <div class="flex flex-col items-center md:items-end gap-4">
+                <div class="flex gap-6">
+                    <a href="https://www.instagram.com/gsfraternidadedaluz/" target="_blank" class="text-white/60 hover:text-brand-gold transition transform hover:scale-110"><i data-lucide="instagram" class="w-6 h-6"></i></a>
+                    <a href="https://www.facebook.com/groups/126930474589655/" target="_blank" class="text-white/60 hover:text-brand-gold transition transform hover:scale-110"><i data-lucide="facebook" class="w-6 h-6"></i></a>
+                    <a href="mailto:gsfraternidadedaluz@gmail.com" class="text-white/60 hover:text-brand-gold transition transform hover:scale-110"><i data-lucide="mail" class="w-6 h-6"></i></a>
+                    <a href="https://api.whatsapp.com/message/B2BBNVXVBGCKD1?autoload=1&app_absent=0" target="_blank" class="text-green-400 hover:text-green-300 transition transform hover:scale-110"><i data-lucide="message-circle" class="w-6 h-6"></i></a>
+                </div>
+                <p class="text-xs text-white/20 font-light text-right">
+                    © 2024 Todos os direitos reservados.<br>
+                    <span class="opacity-50">Recife - PE</span>
+                </p>
+            </div>
+        </div>
+    </footer>
+<script src="https://unpkg.com/swup@4"></script>
+
+<script>
+    function initApp() {
+        // 1. Recria ícones
+        if(window.lucide) lucide.createIcons();
+        
+        // 2. Marca link ativo na Nav
+        const path = window.location.pathname;
+        const page = path.split("/").pop() || 'index.html';
+        
+        document.querySelectorAll('nav a').forEach(link => {
+            if (link.querySelector('img')) return;
+            
+            link.classList.remove('text-brand-gold', 'border-b-2', 'border-brand-gold', 'pb-1');
+            link.classList.add('text-white');
+            
+            const href = link.getAttribute('href');
+            if (href && (href === page || (page === '' && href === 'index.html'))) {
+                link.classList.add('text-brand-gold', 'border-b-2', 'border-brand-gold', 'pb-1');
+                link.classList.remove('text-white');
+            }
+        });
+
+        // 3. Lógica do Menu Mobile (CORRIGIDA)
+        const btn = document.getElementById('mobile-menu-btn');
+        const menu = document.getElementById('mobile-menu');
+        
+        if(btn && menu) {
+            // Clona o botão para limpar eventos antigos
+            const newBtn = btn.cloneNode(true);
+            btn.parentNode.replaceChild(newBtn, btn);
+            
+            // Seleciona os ícones DENTRO do novo botão
+            // Usamos querySelector para garantir que pegamos os elementos certos
+            const iconMenu = newBtn.querySelector('[data-lucide="menu"]'); 
+            const iconClose = newBtn.querySelector('[data-lucide="x"]');
+
+            // --- FUNÇÃO CENTRAL DE FECHAR (FAZ TUDO) ---
+            const closeMenu = () => {
+                // 1. Esconde a gaveta
+                menu.classList.add('hidden');
+                
+                // 2. Gira o botão de volta para a direita (posição original)
+                newBtn.classList.remove('-rotate-180'); 
+                
+                // 3. Troca o X pelo Hambúrguer
+                if(iconClose) iconClose.classList.add('hidden');
+                if(iconMenu) iconMenu.classList.remove('hidden');
+            };
+
+            // --- FUNÇÃO CENTRAL DE ABRIR ---
+            const openMenu = () => {
+                menu.classList.remove('hidden');
+                newBtn.classList.add('-rotate-180'); // Gira para esquerda
+                if(iconMenu) iconMenu.classList.add('hidden');
+                if(iconClose) iconClose.classList.remove('hidden');
+            };
+
+            // Evento 1: Clique no Botão
+            newBtn.addEventListener('click', (e) => {
+                e.stopPropagation(); // Impede que o clique conte como "clique fora"
+                const isOpen = !menu.classList.contains('hidden');
+                
+                if (isOpen) {
+                    closeMenu();
+                } else {
+                    openMenu();
+                }
+            });
+
+            // Evento 2: Clique Fora (No documento)
+            // Removemos listener anterior para não duplicar
+            if (window.clickOutsideHandler) {
+                document.removeEventListener('click', window.clickOutsideHandler);
+            }
+
+            window.clickOutsideHandler = (e) => {
+                // Se o menu estiver ABERTO... E o clique NÃO for no menu... E NÃO for no botão...
+                if (!menu.classList.contains('hidden') && !menu.contains(e.target) && !newBtn.contains(e.target)) {
+                    closeMenu(); // <--- CHAMA A FUNÇÃO QUE GIRA O ÍCONE DE VOLTA
+                }
+            };
+
+            document.addEventListener('click', window.clickOutsideHandler);
+        }
+    }
+
+    const swup = new Swup({
+        containers: ["#swup"],
+        animateHistoryBrowsing: true
+    });
+
+    initApp();
+
+    swup.hooks.on('content:replace', () => {
+        initApp();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+</script>
+</body>
+</html>
