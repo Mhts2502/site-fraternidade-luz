@@ -1,0 +1,13 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: 'Outfit', sans-serif;
+  --font-serif: 'Playfair Display', serif;
+  
+  --color-brand-blue: #1e3a8a;
+  --color-brand-gold: #c4a469;
+  --color-brand-light: #fdfbf7;
+  --color-brand-softblue: #e0e7ff;
+  --color-brand-bordeaux: #800000;
+  --color-brand-brown: #78350f;
+}

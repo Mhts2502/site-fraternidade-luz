@@ -1,0 +1,1171 @@
+<!DOCTYPE html>
+<html lang="pt-br" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel Administrativo - Fraternidade da Luz</title>
+    
+    <link rel="apple-touch-icon" sizes="180x180" href="assets/img/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="assets/img/favicon-32x32.png">
+    <link rel="shortcut icon" href="assets/img/favicon.ico">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    <script src="assets/js/lucide.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Outfit', 'sans-serif'], serif: ['Playfair Display', 'serif'] },
+                    colors: { brand: { blue: '#1e3a8a', gold: '#c4a469', light: '#fdfbf7' } }
+                }
+            }
+        }
+        
+    </script>
+</head>
+<body class="bg-gray-50 text-gray-800 antialiased min-h-screen flex flex-col hidden" id="body-painel">
+    
+    <nav class="bg-gray-900 border-b-4 border-brand-gold shadow-md">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-20"> 
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 bg-brand-gold rounded-full flex items-center justify-center text-gray-900">
+                        <i data-lucide="shield-check" class="w-6 h-6"></i>
+                    </div>
+                    <div>
+                        <span class="text-white font-bold text-lg leading-none block">Painel de Gestão</span>
+                        <span class="text-brand-gold text-xs">Fraternidade da Luz</span>
+                    </div>
+                </div>
+                
+                <button onclick="fazerLogout()" class="text-gray-400 hover:text-red-400 transition flex items-center gap-2 text-sm font-medium bg-gray-800 px-4 py-2 rounded-lg">
+                    <i data-lucide="log-out" class="w-4 h-4"></i> Sair
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <main class="flex-grow w-full max-w-7xl mx-auto px-4 py-8">
+        
+        <div class="mb-8 flex flex-col md:flex-row md:items-end justify-between gap-4">
+            <div>
+                <h1 class="text-3xl font-bold text-brand-blue">Visão Geral</h1>
+                <p class="text-gray-500">Gerencie horários, libere vagas e controle os pacientes.</p>
+            </div>
+            <div class="flex flex-wrap gap-2">
+                <button onclick="mudarAba('agendamentos')" id="tab-agendamentos" class="px-5 py-2.5 bg-brand-blue text-white rounded-lg font-bold shadow-sm flex items-center gap-2 transition">
+                    <i data-lucide="users" class="w-4 h-4"></i> Pacientes Agendados
+                </button>
+                <button onclick="mudarAba('grade')" id="tab-grade" class="px-5 py-2.5 bg-white text-gray-600 border border-gray-200 rounded-lg font-bold hover:bg-gray-50 flex items-center gap-2 transition">
+                    <i data-lucide="calendar-plus" class="w-4 h-4"></i> Liberar Manual & Dias Abertos
+                </button>
+                <button onclick="mudarAba('robo')" id="tab-robo" class="px-5 py-2.5 bg-white text-gray-600 border border-gray-200 rounded-lg font-bold hover:bg-gray-50 flex items-center gap-2 transition">
+                    <i data-lucide="bot" class="w-4 h-4"></i> Robô Automático
+                </button>
+            </div>
+        </div>
+
+        <div id="aba-agendamentos" class="block">
+            <div class="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
+               <div class="p-6 border-b border-gray-100 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-gray-50/50">
+                    <h2 class="text-xl font-bold text-gray-800">Próximos Pacientes</h2>
+                    
+                    <div class="flex flex-col md:flex-row gap-2 w-full md:w-auto">
+                        <input type="date" id="filtroData" class="border border-gray-300 rounded-lg px-3 py-2 text-sm outline-none focus:border-brand-blue w-full md:w-auto">
+                        <div class="flex gap-2 w-full">
+                            <button onclick="carregarAgendamentos(document.getElementById('filtroData').value)" class="flex-1 md:flex-none bg-gray-900 text-white px-4 py-2 rounded-lg text-sm font-bold hover:bg-black transition flex items-center justify-center">
+                                Filtrar
+                            </button>
+                            <button onclick="carregarAgendamentos()" class="bg-gray-200 text-gray-700 px-4 py-2 rounded-lg text-sm font-bold hover:bg-gray-300 transition flex items-center justify-center shrink-0" title="Limpar Filtro">
+                                <i data-lucide="refresh-cw" class="w-4 h-4"></i>
+                            </button>
+                            <button onclick="gerarPDF()" class="flex-1 md:flex-none bg-red-600 text-white px-4 py-2 rounded-lg text-sm font-bold hover:bg-red-700 transition flex items-center justify-center gap-2" title="Baixar Relatório em PDF">
+                                <i data-lucide="file-text" class="w-4 h-4"></i> PDF
+                            </button>
+                            <button onclick="abrirModalEncaixe()" class="flex-1 md:flex-none bg-green-600 text-white px-4 py-2 rounded-lg text-sm font-bold hover:bg-green-700 transition flex items-center justify-center gap-2" title="Adicionar Paciente Manualmente">
+                                <i data-lucide="user-plus" class="w-4 h-4"></i> Encaixe
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="overflow-hidden md:overflow-x-auto bg-gray-50 md:bg-white">
+                    <table class="w-full text-left border-collapse">
+                        <thead class="hidden md:table-header-group">
+                            <tr class="bg-gray-50 text-gray-500 text-sm border-b border-gray-200">
+                                <th class="p-4 font-medium">Data / Dia</th>
+                                <th class="p-4 font-medium">Paciente</th>
+                                <th class="p-4 font-medium">CPF</th> <th class="p-4 font-medium">WhatsApp</th>
+                                <th class="p-4 font-medium">Serviço</th>
+                                <th class="p-4 font-medium text-center">Ficha</th>
+                                <th class="p-4 font-medium text-center">Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="lista-agendamentos" class="text-sm block md:table-row-group">
+                            <tr class="block md:table-row"><td colspan="6" class="p-8 text-center text-gray-400">
+                                <i data-lucide="loader-2" class="w-8 h-8 animate-spin mx-auto mb-2 text-brand-blue"></i>
+                                Carregando banco de dados...
+                            </td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div id="aba-grade" class="hidden">
+            <div class="bg-white rounded-2xl shadow-sm border border-gray-200 p-6 max-w-2xl mx-auto">
+                <div class="mb-8 border-b border-gray-100 pb-4">
+                    <h2 class="text-2xl font-bold text-brand-blue flex items-center gap-2">
+                        <i data-lucide="calendar-plus" class="w-6 h-6"></i> Liberação Manual
+                    </h2>
+                    <p class="text-gray-500 mt-1">Gere novas vagas de atendimento no banco de dados.</p>
+                </div>
+
+                <form id="formLiberarVagas" class="space-y-6">
+                    <div>
+                        <label class="block text-sm font-bold text-gray-700 mb-2">1. Qual atendimento deseja liberar?</label>
+                        <select id="selectServico" required class="w-full p-3 border border-gray-300 rounded-xl outline-none focus:ring-2 focus:ring-brand-blue focus:border-brand-blue bg-gray-50">
+                            <option value="" disabled selected>Selecione uma opção...</option>
+                            <option value="Foto Kirlian">Foto Kirlian (Quartas-feiras)</option>
+                            <option value="Psicologico">Atendimento Psicológico (Terças-feiras)</option>
+                        </select>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label class="block text-sm font-bold text-gray-700 mb-2">2. Dia do Atendimento</label>
+                           <input type="date" id="inputData" required disabled class="w-full p-3 border border-gray-300 rounded-xl outline-none focus:ring-2 focus:ring-brand-blue disabled:opacity-50 disabled:cursor-not-allowed bg-gray-50">
+                            <p id="dicaData" class="text-xs text-gray-400 mt-1">Selecione o serviço primeiro.</p>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-bold text-gray-700 mb-2">3. Quantidade de Vagas</label>
+                            <input type="number" id="inputVagas" required disabled min="1" class="w-full p-3 border border-gray-300 rounded-xl outline-none focus:ring-2 focus:ring-brand-blue disabled:opacity-50 disabled:cursor-not-allowed bg-gray-50">
+                            <p id="dicaVagas" class="text-xs text-gray-400 mt-1">Define o limite para este dia.</p>
+                        </div>
+                    </div>
+
+                    <button type="submit" id="btnGerarVagas" class="w-full py-4 bg-brand-blue text-white rounded-xl font-bold shadow-md hover:bg-brand-gold transition duration-300 flex items-center justify-center gap-2 text-lg">
+                        <i data-lucide="check-circle" class="w-5 h-5"></i> GERAR VAGAS AGORA
+                    </button>
+                </form>
+
+                <div class="mt-10 border-t border-gray-100 pt-8">
+                    <h3 class="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2">
+                        <i data-lucide="calendar-days" class="w-5 h-5 text-brand-blue"></i> Dias Abertos Atualmente
+                    </h3>
+                    <div class="bg-gray-50 rounded-xl border border-gray-200 overflow-hidden">
+                        <ul id="listaDiasAbertos" class="divide-y divide-gray-200">
+                            <li class="p-4 text-center text-gray-500 text-sm">Nenhum dia carregado.</li>
+                        </ul>
+                    </div>
+                </div>
+                </div>
+        </div>
+
+        <div id="aba-robo" class="hidden">
+            <div class="bg-white rounded-2xl shadow-sm border border-gray-200 p-6 max-w-2xl mx-auto relative overflow-hidden">
+                <i data-lucide="bot" class="absolute -right-10 -bottom-10 w-64 h-64 text-gray-50 opacity-50 z-0"></i>
+
+                <div class="mb-8 border-b border-gray-100 pb-4 relative z-10 flex justify-between items-start">
+                    <div>
+                        <h2 class="text-2xl font-bold text-brand-blue flex items-center gap-2">
+                            <i data-lucide="bot" class="w-6 h-6"></i> Automação Semanal
+                        </h2>
+                        <p class="text-gray-500 mt-1 text-sm">Configure o robô para abrir a agenda automaticamente toda semana.</p>
+                    </div>
+                    
+                    <label class="relative inline-flex items-center cursor-pointer mt-2">
+                        <input type="checkbox" id="statusRobo" class="sr-only peer" checked>
+                        <div class="w-14 h-7 bg-gray-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-6 after:w-6 after:transition-all peer-checked:bg-green-500 shadow-inner"></div>
+                        <span class="ml-3 text-sm font-bold text-gray-700" id="textoStatusRobo">Robô Ligado</span>
+                    </label>
+                </div>
+
+                <form id="formRobo" class="space-y-6 relative z-10">
+                    <div class="bg-gray-50 p-5 rounded-xl border border-gray-200">
+                        <label class="block text-sm font-bold text-gray-700 mb-2 flex items-center gap-2">
+                            <i data-lucide="calendar-clock" class="w-4 h-4 text-brand-blue"></i> Dia da Execução
+                        </label>
+                        <p class="text-xs text-gray-500 mb-3">Em qual dia da semana o robô deve gerar as vagas para a próxima semana?</p>
+                        <select id="diaExecucao" required class="w-full p-3 border border-gray-300 rounded-xl outline-none focus:ring-2 focus:ring-brand-blue bg-white">
+                            <option value="1">Segunda-feira</option>
+                            <option value="2">Terça-feira</option>
+                            <option value="3">Quarta-feira</option>
+                            <option value="4">Quinta-feira</option>
+                            <option value="5" selected>Sexta-feira</option>
+                            <option value="6">Sábado</option>
+                            <option value="0">Domingo</option>
+                        </select>
+                    </div>
+                    <div class="bg-gray-50 p-5 rounded-xl border border-gray-200 mt-4">
+                        <label class="block text-sm font-bold text-gray-700 mb-2 flex items-center gap-2">
+                            <i data-lucide="fast-forward" class="w-4 h-4 text-brand-blue"></i> Janela de Antecedência (Salto)
+                        </label>
+                        <p class="text-xs text-gray-500 mb-3">Para qual semana o robô deve abrir as vagas?</p>
+                        <select id="semanasAvanco" required class="w-full p-3 border border-gray-300 rounded-xl outline-none focus:ring-2 focus:ring-brand-blue bg-white">
+                            <option value="0">Próxima semana (Sem salto)</option>
+                            <option value="1">Daqui a 1 semana (+7 dias)</option>
+                            <option value="2">Daqui a 2 semanas (+14 dias)</option>
+                            <option value="3" selected>Daqui a 3 semanas (+21 dias)</option>
+                            <option value="4">Daqui a 4 semanas (+28 dias)</option>
+                        </select>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="bg-purple-50 p-5 rounded-xl border border-purple-100">
+                            <label class="block text-sm font-bold text-purple-900 mb-2">Vagas Kirlian (Quartas)</label>
+                            <p class="text-xs text-purple-700 mb-3 opacity-80">Quantas fichas liberar por semana?</p>
+                            <input type="number" id="vagasKirlianRobo" required min="0" value="20" class="w-full p-3 border border-purple-200 rounded-xl outline-none focus:ring-2 focus:ring-purple-400 bg-white font-bold text-purple-900">
+                        </div>
+
+                        <div class="bg-blue-50 p-5 rounded-xl border border-blue-100">
+                            <label class="block text-sm font-bold text-brand-blue mb-2">Vagas Psicologia (Terças)</label>
+                            <p class="text-xs text-blue-700 mb-3 opacity-80">Quantas fichas liberar por semana?</p>
+                            <input type="number" id="vagasPsicologiaRobo" required min="0" value="5" class="w-full p-3 border border-blue-200 rounded-xl outline-none focus:ring-2 focus:ring-brand-blue bg-white font-bold text-brand-blue">
+                        </div>
+                    </div>
+
+                    <button type="submit" class="w-full py-4 bg-gray-900 text-white rounded-xl font-bold shadow-md hover:bg-black transition duration-300 flex items-center justify-center gap-2 text-lg">
+                        <i data-lucide="save" class="w-5 h-5"></i> SALVAR CONFIGURAÇÕES DO ROBÔ
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <div id="modalEncaixe" class="fixed inset-0 bg-black/60 z-50 hidden flex items-center justify-center p-4">
+            <div class="bg-white rounded-2xl shadow-xl w-full max-w-lg overflow-hidden">
+                <div class="p-6 border-b border-gray-100 flex justify-between items-center bg-gray-50">
+                    <h3 class="text-xl font-bold text-gray-800 flex items-center gap-2"><i data-lucide="user-plus" class="w-5 h-5 text-green-600"></i> Novo Encaixe</h3>
+                    <button onclick="fecharModal('modalEncaixe')" class="text-gray-400 hover:text-red-500"><i data-lucide="x" class="w-6 h-6"></i></button>
+                </div>
+                <div class="p-6 space-y-4">
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs font-bold text-gray-500 mb-1">Serviço</label>
+                            <select id="encaixeServico" onchange="buscarDatasEncaixe()" class="w-full p-2 border border-gray-300 rounded-lg outline-none focus:border-brand-blue">
+                                <option value="" disabled selected>Selecione...</option>
+                                <option value="Foto Kirlian">Foto Kirlian</option>
+                                <option value="Psicologico">Psicologia</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-gray-500 mb-1">Data Disponível</label>
+                            <select id="encaixeData" class="w-full p-2 border border-gray-300 rounded-lg outline-none focus:border-brand-blue disabled:opacity-50">
+                                <option value="" disabled selected>Escolha o serviço primeiro</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div><label class="block text-xs font-bold text-gray-500 mb-1">Nome Completo</label><input type="text" id="encaixeNome" class="w-full p-2 border border-gray-300 rounded-lg outline-none focus:border-brand-blue"></div>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div><label class="block text-xs font-bold text-gray-500 mb-1">CPF</label><input type="text" id="encaixeCpf" class="w-full p-2 border border-gray-300 rounded-lg outline-none focus:border-brand-blue"></div>
+                        <div><label class="block text-xs font-bold text-gray-500 mb-1">WhatsApp</label><input type="text" id="encaixeZap" class="w-full p-2 border border-gray-300 rounded-lg outline-none focus:border-brand-blue"></div>
+                    </div>
+                    <button onclick="salvarEncaixe()" class="w-full mt-4 bg-green-600 text-white font-bold py-3 rounded-xl hover:bg-green-700 transition">INSERIR PACIENTE</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="modalGerenciar" class="fixed inset-0 bg-black/60 z-50 hidden flex items-center justify-center p-4">
+            <div class="bg-white rounded-2xl shadow-xl w-full max-w-xl overflow-hidden">
+                <div class="p-6 border-b border-gray-100 flex justify-between items-center bg-brand-blue">
+                    <h3 class="text-xl font-bold text-white flex items-center gap-2"><i data-lucide="settings" class="w-5 h-5"></i> Gerenciar Paciente</h3>
+                    <button onclick="fecharModal('modalGerenciar')" class="text-white/70 hover:text-white"><i data-lucide="x" class="w-6 h-6"></i></button>
+                </div>
+                
+                <div class="p-6 overflow-y-auto max-h-[80vh]">
+                    <input type="hidden" id="gerenciarId">
+                    <input type="hidden" id="gerenciarIdAtendimentoOriginal">
+                    <input type="hidden" id="gerenciarServico">
+
+                    <div class="mb-6">
+                        <h4 class="text-sm font-bold text-gray-800 mb-3 border-b pb-2">1. Dados Pessoais</h4>
+                        <div class="space-y-3">
+                            <div><label class="block text-xs text-gray-500">Nome</label><input type="text" id="gerenciarNome" class="w-full p-2 border rounded-lg"></div>
+                            <div class="grid grid-cols-2 gap-4">
+                                <div><label class="block text-xs text-gray-500">CPF</label><input type="text" id="gerenciarCpf" class="w-full p-2 border rounded-lg"></div>
+                                <div><label class="block text-xs text-gray-500">Telefone</label><input type="text" id="gerenciarZap" class="w-full p-2 border rounded-lg"></div>
+                            </div>
+                            <button onclick="salvarDadosPessoais()" class="w-full bg-gray-800 text-white text-sm font-bold py-2 rounded-lg hover:bg-black transition">Salvar Dados Cadastrais</button>
+                        </div>
+                    </div>
+
+                    <div class="bg-blue-50 p-4 rounded-xl border border-blue-100">
+                        <h4 class="text-sm font-bold text-brand-blue mb-3 border-b border-blue-200 pb-2">2. Transferência / Permuta de Data</h4>
+                        <label class="block text-xs text-gray-600 mb-1">Mover paciente para qual dia?</label>
+                        <select id="gerenciarNovaData" onchange="verificarLotaçaoData()" class="w-full p-2 border border-blue-200 rounded-lg outline-none mb-3">
+                            </select>
+
+                        <div id="boxPermuta" class="hidden bg-orange-50 p-3 rounded-lg border border-orange-200 mb-3">
+                            <p class="text-xs text-orange-800 font-bold mb-2">⚠️ Esta data está lotada. Escolha um paciente de lá para trocar de lugar com este:</p>
+                            <select id="gerenciarPacientePermuta" class="w-full p-2 border border-orange-300 rounded-lg text-sm"></select>
+                        </div>
+
+                        <button id="btnEfetuarTroca" onclick="efetuarTrocaData()" class="w-full bg-brand-blue text-white font-bold py-3 rounded-xl hover:bg-brand-gold transition hidden shadow-md">
+                            Confirmar Nova Data
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <script src="assets/js/supabase-js@2.js"></script>
+    <script>
+        // Inicializa o Supabase
+        const supabaseUrl = 'https://itluckffjkbpkzorobwa.supabase.co';
+        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Iml0bHVja2ZmamticGt6b3JvYndhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzA5MzE5MDMsImV4cCI6MjA4NjUwNzkwM30.xZfVUPFyGI9t5MoEO5oBssAp0spo-Ybf_WkK-b3b8q0';
+        const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
+        window.agendamentosAtuais = []; // Guarda a lista atual para o PDF
+
+        // ==========================================
+        // 1. PROTEÇÃO DE TELA (AUTH GUARD)
+        // ==========================================
+        async function checarSessao() {
+            const { data: { session } } = await supabaseClient.auth.getSession();
+            if (!session) {
+                window.location.href = 'login.html'; 
+            } else {
+                document.getElementById('body-painel').classList.remove('hidden');
+                carregarAgendamentos();
+            }
+        }
+        checarSessao();
+
+        async function fazerLogout() {
+            await supabaseClient.auth.signOut();
+            window.location.href = "login.html";
+        }
+
+        // ==========================================
+        // 2. FUNÇÕES DE BUSCA E LISTAGEM
+        // ==========================================
+        function formatarDataBR(dataString) {
+            if(!dataString) return { data: '', diaSemana: '' };
+            const partes = dataString.split('-');
+            const dataObj = new Date(partes[0], partes[1] - 1, partes[2]);
+            const diasSemana = ['Domingo', 'Segunda-feira', 'Terça-feira', 'Quarta-feira', 'Quinta-feira', 'Sexta-feira', 'Sábado'];
+            return {
+                data: `${partes[2]}/${partes[1]}/${partes[0]}`,
+                diaSemana: diasSemana[dataObj.getDay()]
+            };
+        }
+
+        async function carregarAgendamentos(dataFiltro = null) {
+            const lista = document.getElementById('lista-agendamentos');
+            lista.innerHTML = `<tr><td colspan="6" class="p-8 text-center text-gray-400"><i data-lucide="loader-2" class="w-8 h-8 animate-spin mx-auto mb-2 text-brand-blue"></i>Carregando banco de dados...</td></tr>`;
+            if(window.lucide) lucide.createIcons();
+
+            let query = supabaseClient
+                .from('agendamentos_pacientes')
+                .select('*')
+                .order('data_agendada', { ascending: true })
+                .order('ordem_chegada', { ascending: true });
+
+            if(dataFiltro) {
+                query = query.eq('data_agendada', dataFiltro);
+            }
+
+            const { data, error } = await query;
+
+            if (error) {
+                console.error("Erro ao buscar agendamentos:", error);
+                lista.innerHTML = '<tr><td colspan="6" class="p-4 text-center text-red-500 font-bold">Erro ao carregar dados.</td></tr>';
+                return;
+            }
+
+            window.agendamentosAtuais = data || [];
+            lista.innerHTML = '';
+            
+            if (data.length === 0) {
+                lista.innerHTML = '<tr><td colspan="6" class="p-4 text-center text-gray-500">Nenhum paciente agendado.</td></tr>';
+                return;
+            }
+
+            data.forEach(paciente => {
+                const infoData = formatarDataBR(paciente.data_agendada);
+                const corServico = paciente.servico_nome === 'Foto Kirlian' ? 'bg-purple-100 text-purple-800' : 'bg-blue-100 text-blue-800';
+                
+                lista.innerHTML += `
+                    <tr class="bg-white mb-4 rounded-xl shadow-sm border border-gray-200 md:mb-0 md:rounded-none md:shadow-none md:border-0 md:border-b md:border-gray-100 hover:bg-gray-50 transition block md:table-row p-4 md:p-0">
+                        
+                        <td class="md:p-4 flex justify-between items-start md:table-cell mb-3 md:mb-0">
+                            <div class="flex flex-col">
+                                <span class="font-bold text-gray-700 text-sm">${infoData.data}</span> 
+                                <span class="text-gray-400 font-normal text-xs block">${infoData.diaSemana}</span>
+                            </div>
+                            <span class="${corServico} px-2 py-1 rounded text-[10px] uppercase font-bold md:hidden">${paciente.servico_nome || 'N/A'}</span>
+                        </td>
+
+                        <td class="md:p-4 font-bold text-brand-blue text-lg md:text-sm md:font-medium block md:table-cell mb-1 md:mb-0">
+                            ${paciente.nome_paciente}
+                            <span class="md:hidden block text-xs text-gray-500 font-normal mt-1">CPF: ${paciente.cpf || 'Não informado'}</span>
+                        </td>
+
+                        <td class="p-4 hidden md:table-cell text-sm text-gray-600">
+                            ${paciente.cpf || 'Não inf.'}
+                        </td>
+
+                        <td class="md:p-4 block md:table-cell mb-4 md:mb-0">
+                            <a href="https://wa.me/55${paciente.telefone.replace(/\D/g, '')}" target="_blank" class="text-green-600 font-bold hover:underline flex items-center gap-1 text-sm md:text-xs">
+                                <i data-lucide="message-circle" class="w-4 h-4"></i> ${paciente.telefone}
+                            </a>
+                        </td>
+
+                        <td class="p-4 hidden md:table-cell">
+                            <span class="${corServico} px-2 py-1 rounded text-xs font-bold">${paciente.servico_nome || 'N/A'}</span>
+                        </td>
+
+                        <td class="md:p-4 text-center font-bold text-gray-500 flex justify-between items-center md:table-cell border-t border-gray-100 md:border-0 pt-3 md:pt-0">
+                            <span class="md:hidden text-xs text-gray-400 font-normal">Ficha nº</span>
+                            <span class="text-lg md:text-sm text-gray-800 md:text-gray-500">#${String(paciente.ordem_chegada).padStart(2, '0')}</span>
+                            <div class="flex gap-2 md:hidden">
+                                <button onclick='abrirModalGerenciar(${JSON.stringify(paciente)})' class="text-brand-blue hover:text-white hover:bg-brand-blue p-2 rounded-lg bg-blue-50 transition" title="Gerenciar Paciente">
+                                    <i data-lucide="settings" class="w-5 h-5"></i>
+                                </button>
+                                <button onclick="deletarPaciente('${paciente.id}')" class="text-red-500 hover:text-white hover:bg-red-500 p-2 rounded-lg bg-red-50 transition" title="Excluir Agendamento">
+                                    <i data-lucide="trash-2" class="w-5 h-5"></i>
+                                </button>
+                            </div>
+                        </td>
+
+                        <td class="p-4 text-center hidden md:table-cell">
+                            <div class="flex justify-center gap-2">
+                                <button onclick='abrirModalGerenciar(${JSON.stringify(paciente)})' class="text-brand-blue hover:text-blue-800 p-2 rounded-lg hover:bg-blue-50 transition" title="Gerenciar Paciente">
+                                    <i data-lucide="settings" class="w-5 h-5"></i>
+                                </button>
+                                <button onclick="deletarPaciente('${paciente.id}')" class="text-red-500 hover:text-red-700 p-2 rounded-lg hover:bg-red-50 transition" title="Excluir Agendamento">
+                                    <i data-lucide="trash-2" class="w-5 h-5"></i>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            });
+            if(window.lucide) lucide.createIcons();
+        }
+
+        async function deletarPaciente(id) {
+            if(confirm("Tem certeza que deseja apagar este agendamento?")) {
+                await supabaseClient.from('agendamentos_pacientes').delete().eq('id', id);
+                carregarAgendamentos(document.getElementById('filtroData').value);
+            }
+        }
+
+
+        // ==========================================
+        // 3. LÓGICA DE NAVEGAÇÃO DAS ABAS
+        // ==========================================
+        function mudarAba(abaSelecionada) {
+            const abas = ['agendamentos', 'grade', 'robo'];
+            abas.forEach(aba => {
+                const btn = document.getElementById(`tab-${aba}`);
+                const div = document.getElementById(`aba-${aba}`);
+                
+                if(aba === abaSelecionada) {
+                    btn.className = "px-5 py-2.5 bg-brand-blue text-white rounded-lg font-bold shadow-sm flex items-center gap-2 transition";
+                    div.classList.remove('hidden');
+                    div.classList.add('block');
+                    if(aba === 'grade') carregarDiasAbertos();
+                } else {
+                    btn.className = "px-5 py-2.5 bg-white text-gray-600 border border-gray-200 rounded-lg font-bold hover:bg-gray-50 flex items-center gap-2 transition";
+                    div.classList.remove('block');
+                    div.classList.add('hidden');
+                }
+            });
+        }
+
+        // ==========================================
+        // 4. LÓGICA DE LIBERAÇÃO MANUAL DE VAGAS
+        // ==========================================
+        const selectServico = document.getElementById('selectServico');
+        const inputData = document.getElementById('inputData');
+        const inputVagas = document.getElementById('inputVagas');
+        const dicaData = document.getElementById('dicaData');
+        const dicaVagas = document.getElementById('dicaVagas');
+
+        const hoje = new Date().toISOString().split('T')[0];
+        inputData.setAttribute('min', hoje);
+
+        // ==========================================
+        // TRAVAS INTELIGENTES DE DATA (Matrix Bypass)
+        // ==========================================
+        const filtroData = document.getElementById('filtroData');
+
+        function aplicarTravaData(campo, bloquearPassado) {
+            if(!campo) return;
+            
+            // Trava do teclado (impede bug de anos com mais de 4 dígitos)
+            campo.addEventListener('keydown', function(e) {
+                if (this.value && this.value.length === 10 && e.key >= '0' && e.key <= '9') {
+                    const anoDigitado = this.value.split('-')[0];
+                    if (anoDigitado.length === 4 && (anoDigitado.startsWith('1') || anoDigitado.startsWith('2'))) {
+                        e.preventDefault();
+                    }
+                }
+            });
+
+            // Trava ao sair do campo (clicar fora)
+            campo.addEventListener('blur', function() {
+                if (this.value) {
+                    const ano = this.value.split('-')[0];
+                    // Apaga se a pessoa colar uma data bizarra
+                    if (ano.length > 4 || this.validity.badInput) {
+                        this.value = '';
+                    }
+                    // Regra específica para liberação de vagas (Bloqueia o passado)
+                    if (bloquearPassado && this.value < hoje) {
+                        alert("❌ Você não pode liberar vagas para uma data no passado.");
+                        this.value = '';
+                    }
+                }
+            });
+        }
+
+        // Aplica a trava no Filtro (Permite ver o passado)
+        aplicarTravaData(filtroData, false);
+        
+        // Aplica a trava na Liberação de Vagas (Bloqueia o passado)
+        aplicarTravaData(inputData, true);
+
+        selectServico.addEventListener('change', function() {
+            const servico = this.value;
+            inputData.disabled = false;
+            inputVagas.disabled = false;
+            inputData.value = '';
+            
+            if(servico === 'Foto Kirlian') {
+                dicaData.textContent = "Apenas Quartas-feiras permitidas.";
+                dicaData.className = "text-xs mt-1 text-purple-600 font-bold";
+                inputVagas.max = 20; inputVagas.value = 20;
+                dicaVagas.textContent = "Máximo de 20 vagas.";
+                dicaVagas.className = "text-xs mt-1 text-purple-600 font-bold";
+            } else if(servico === 'Psicologico') {
+                dicaData.textContent = "Apenas Terças-feiras permitidas.";
+                dicaData.className = "text-xs mt-1 text-brand-blue font-bold";
+                inputVagas.max = 5; inputVagas.value = 5;
+                dicaVagas.textContent = "Máximo de 5 vagas.";
+                dicaVagas.className = "text-xs mt-1 text-brand-blue font-bold";
+            }
+        });
+
+        inputData.addEventListener('change', function() {
+            if(!this.value) return;
+            const dataEscolhida = new Date(this.value + "T12:00:00");
+            const diaSemana = dataEscolhida.getDay(); 
+            const servico = selectServico.value;
+
+            if(servico === 'Foto Kirlian' && diaSemana !== 3) {
+                alert("❌ Erro: Foto Kirlian só pode ser liberada nas Quartas-feiras!");
+                this.value = ''; 
+            } else if(servico === 'Psicologico' && diaSemana !== 2) {
+                alert("❌ Erro: Psicologia só pode ser liberada nas Terças-feiras!");
+                this.value = ''; 
+            }
+        });
+
+        document.getElementById('formLiberarVagas').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const btn = document.getElementById('btnGerarVagas');
+            const txtOriginal = btn.innerHTML;
+            btn.innerHTML = '<i data-lucide="loader-2" class="w-5 h-5 animate-spin"></i> SALVANDO NO BANCO...';
+            if(window.lucide) lucide.createIcons();
+            
+            const servico = selectServico.value;
+            const dataEscolhida = inputData.value;
+            const vagas = parseInt(inputVagas.value);
+
+            const { error } = await supabaseClient
+                .from('atendimentos_disponiveis')
+                .insert([{
+                    tipo_servico: servico,
+                    data_atendimento: dataEscolhida,
+                    vagas_totais: vagas,
+                    vagas_ocupadas: 0,
+                    status: 'aberto'
+                }]);
+
+            if (error) {
+                if(error.code === '23505') { 
+                    const dataBr = dataEscolhida.split('-').reverse().join('/');
+                    alert(`❌ BLOQUEADO: As vagas para ${servico} no dia ${dataBr} já foram liberadas anteriormente. A agenda já existe.`);
+                } else {
+                    alert(`❌ Ocorreu um erro no banco de dados: ${error.message}`);
+                }
+            } else {
+                const dataBr = dataEscolhida.split('-').reverse().join('/');
+                alert(`✅ Sucesso! ${vagas} vagas de ${servico} liberadas para o dia ${dataBr}. O site já está atualizado.`);
+                carregarDiasAbertos();
+                this.reset();
+                inputData.disabled = true;
+                inputVagas.disabled = true;
+                dicaData.textContent = "Selecione o serviço primeiro.";
+                dicaData.className = "text-xs text-gray-400 mt-1";
+                dicaVagas.textContent = "Define o limite para este dia.";
+                dicaVagas.className = "text-xs text-gray-400 mt-1";
+            }
+            
+            btn.innerHTML = txtOriginal;
+            if(window.lucide) lucide.createIcons();
+        })
+
+        // ==========================================
+        // FUNÇÕES DE GERENCIAR E EXCLUIR DIAS
+        // ==========================================
+        async function carregarDiasAbertos() {
+            const lista = document.getElementById('listaDiasAbertos');
+            if(!lista) return;
+            
+            lista.innerHTML = '<li class="p-4 text-center text-gray-500 text-sm"><i data-lucide="loader-2" class="w-5 h-5 animate-spin mx-auto mb-1"></i> Carregando...</li>';
+            if(window.lucide) lucide.createIcons();
+
+            const hoje = new Date().toISOString().split('T')[0];
+            const { data, error } = await supabaseClient
+                .from('atendimentos_disponiveis')
+                .select('*')
+                .gte('data_atendimento', hoje)
+                .order('data_atendimento', { ascending: true });
+
+            lista.innerHTML = '';
+
+            if (error || !data || data.length === 0) {
+                lista.innerHTML = '<li class="p-4 text-center text-gray-500 text-sm">Nenhum dia futuro está aberto no momento.</li>';
+                return;
+            }
+
+            data.forEach(dia => {
+                const dataBr = dia.data_atendimento.split('-').reverse().join('/');
+                const corBadge = dia.tipo_servico === 'Foto Kirlian' ? 'bg-purple-100 text-purple-800' : 'bg-blue-100 text-blue-800';
+                
+                lista.innerHTML += `
+                    <li class="p-4 flex flex-col md:flex-row justify-between items-start md:items-center gap-3 hover:bg-gray-100 transition">
+                        <div>
+                            <span class="font-bold text-gray-800">${dataBr}</span>
+                            <span class="${corBadge} px-2 py-0.5 rounded text-[10px] uppercase font-bold ml-2">${dia.tipo_servico}</span>
+                            <p class="text-xs text-gray-500 mt-1">${dia.vagas_ocupadas} de ${dia.vagas_totais} vagas ocupadas</p>
+                        </div>
+                        <button onclick="cancelarDiaAtendimento('${dia.id}', '${dataBr}')" class="text-red-500 hover:text-red-700 bg-red-50 hover:bg-red-100 px-3 py-1.5 rounded-lg font-bold text-xs flex items-center gap-1 transition">
+                            <i data-lucide="trash-2" class="w-4 h-4"></i> Excluir Dia
+                        </button>
+                    </li>
+                `;
+            });
+            if(window.lucide) lucide.createIcons();
+        }
+
+        async function cancelarDiaAtendimento(idAtendimento, dataTexto) {
+            // 1. Trava de Segurança Absoluta (Verifica se há pacientes)
+            const { count } = await supabaseClient
+                .from('agendamentos_pacientes')
+                .select('*', { count: 'exact', head: true })
+                .eq('atendimento_id', idAtendimento);
+
+            if (count > 0) {
+                alert(`⚠️ OPERAÇÃO BLOQUEADA: Existem ${count} pacientes agendados neste dia!\n\nPara excluir esta data, você precisa primeiro ir na aba "Pacientes Agendados" e transferir (ou excluir) essas pessoas para esvaziar a lista.`);
+                return;
+            }
+
+            // 2. Confirmação Final
+            if (!confirm(`Tem certeza que deseja EXCLUIR DEFINITIVAMENTE o dia ${dataTexto} do sistema?`)) { 
+                return; 
+            }
+
+            // 3. Executa a exclusão real no banco
+            const { error } = await supabaseClient
+                .from('atendimentos_disponiveis')
+                .delete()
+                .eq('id', idAtendimento);
+
+            if (!error) {
+                alert(`✅ O dia ${dataTexto} foi excluído com sucesso!`);
+                carregarDiasAbertos(); 
+            } else {
+                alert("❌ Erro ao excluir o dia: " + error.message);
+            }
+        }
+        
+        // ==========================================
+        // 5. LÓGICA DA ABA DO ROBÔ
+        // ==========================================
+        const toggleRobo = document.getElementById('statusRobo');
+        const textoStatusRobo = document.getElementById('textoStatusRobo');
+        const formRobo = document.getElementById('formRobo');
+        
+        // Pegando os campos individualmente para não bloquear o botão de salvar
+        const inputDia = document.getElementById('diaExecucao');
+        const inputKirlian = document.getElementById('vagasKirlianRobo');
+        const inputPsico = document.getElementById('vagasPsicologiaRobo');
+        const inputSemanas = document.getElementById('semanasAvanco');
+        const btnSalvar = formRobo ? formRobo.querySelector('button[type="submit"]') : null;
+
+        // Função que altera o visual sem matar o botão de salvar
+        function atualizarVisualRobo(ligado) {
+            if(ligado) {
+                textoStatusRobo.textContent = "Robô Ligado";
+                textoStatusRobo.classList.remove('text-gray-400');
+                textoStatusRobo.classList.add('text-gray-700');
+                
+                // Libera os campos para edição
+                if(inputDia) inputDia.disabled = false;
+                if(inputKirlian) inputKirlian.disabled = false;
+                if(inputPsico) inputPsico.disabled = false;
+                if(inputSemanas) inputSemanas.disabled = false;
+            } else {
+                textoStatusRobo.textContent = "Robô Desligado";
+                textoStatusRobo.classList.remove('text-gray-700');
+                textoStatusRobo.classList.add('text-gray-400');
+                
+                // Bloqueia APENAS os campos. O botão de Salvar continua funcionando!
+                if(inputDia) inputDia.disabled = true;
+                if(inputKirlian) inputKirlian.disabled = true;
+                if(inputPsico) inputPsico.disabled = true;
+                if(inputSemanas) inputSemanas.disabled = true;
+            }
+        }
+
+        // Função central para injetar os dados na tela
+        function aplicarDadosNaTela(data) {
+            if(inputSemanas && data.semanas_avanco !== undefined) inputSemanas.value = data.semanas_avanco;
+            if(toggleRobo) toggleRobo.checked = data.status_ligado;
+            if(inputDia) inputDia.value = data.dia_execucao;
+            if(inputKirlian) inputKirlian.value = data.vagas_kirlian;
+            if(inputPsico) inputPsico.value = data.vagas_psicologia;
+            if(inputSemanas && data.semanas_avanco !== undefined) inputSemanas.value = data.semanas_avanco;
+            
+            atualizarVisualRobo(data.status_ligado);
+        }
+
+        // 1. Snapshot Inicial (Quando a página carrega)
+        async function carregarConfiguracoesRobo() {
+            const { data, error } = await supabaseClient
+                .from('configuracoes_robo')
+                .select('*')
+                .eq('id', 1)
+                .single();
+
+            if (data) aplicarDadosNaTela(data);
+        }
+        carregarConfiguracoesRobo();
+
+        // 2. Mudança Visual ao clicar na chave (ainda não salvou)
+        if (toggleRobo) {
+            toggleRobo.addEventListener('change', function() {
+                atualizarVisualRobo(this.checked);
+            });
+        }
+
+        // 3. O Botão de Salvar envia a ordem pro Supabase
+        if (formRobo && btnSalvar) {
+            formRobo.addEventListener('submit', async function(e) {
+                e.preventDefault();
+                const txtOriginal = btnSalvar.innerHTML;
+                btnSalvar.innerHTML = '<i data-lucide="loader-2" class="w-5 h-5 animate-spin"></i> SALVANDO...';
+                if(window.lucide) lucide.createIcons();
+
+                const { error } = await supabaseClient
+                    .from('configuracoes_robo')
+                    .update({
+                        status_ligado: toggleRobo.checked,
+                        dia_execucao: parseInt(inputDia.value),
+                        vagas_kirlian: parseInt(inputKirlian.value),
+                        vagas_psicologia: parseInt(inputPsico.value),
+                        semanas_avanco: parseInt(inputSemanas.value),
+                    })
+                    .eq('id', 1);
+
+                if(error) {
+                    alert("❌ Erro ao salvar configurações: " + error.message);
+                    btnSalvar.innerHTML = txtOriginal;
+                } 
+                // Se der certo, não precisa de alert. O Real-time (abaixo) vai confirmar!
+                if(window.lucide) lucide.createIcons();
+            });
+        }
+
+       // 4. CYBERSECURITY REAL-TIME (Com Trava Anti-Duplicação Corrigida)
+        let espiaoJaIniciado = false; 
+
+        async function iniciarEspiaoComCracha() {
+            // Se já começou, aborta na hora
+            if (espiaoJaIniciado) return; 
+            
+            // TRANCA A PORTA IMEDIATAMENTE (Antes de ir buscar o crachá!)
+            espiaoJaIniciado = true; 
+
+            const { data: { session } } = await supabaseClient.auth.getSession();
+
+            if (session) {
+                console.log("✅ Crachá verificado! Iniciando conexão segura...");
+                
+                supabaseClient
+                    .channel('mudancas-robo')
+                    .on('postgres_changes', 
+                        { event: 'UPDATE', schema: 'public', table: 'configuracoes_robo' }, 
+                        (payload) => {
+                            console.log("⚡ Atualização recebida:", payload);
+                            aplicarDadosNaTela(payload.new);
+                            
+                            // Efeito visual no botão
+                            if(btnSalvar) {
+                                const txtOriginal = btnSalvar.innerHTML;
+                                btnSalvar.innerHTML = '<i data-lucide="check" class="w-5 h-5 text-green-400"></i> SINCRONIZADO';
+                                if(window.lucide) lucide.createIcons();
+                                
+                                setTimeout(() => {
+                                    btnSalvar.innerHTML = '<i data-lucide="save" class="w-5 h-5"></i> SALVAR CONFIGURAÇÕES DO ROBÔ';
+                                    if(window.lucide) lucide.createIcons();
+                                }, 2500);
+                            }
+                        }
+                    )
+                    .subscribe();
+            } else {
+                // Se não tinha crachá, destranca a porta para tentar de novo no futuro
+                espiaoJaIniciado = false; 
+            }
+        }
+
+        
+        // Fica de olho nas mudanças de login
+        supabaseClient.auth.onAuthStateChange((event, session) => {
+            if (event === 'INITIAL_SESSION' || event === 'SIGNED_IN') {
+                iniciarEspiaoComCracha();
+            }
+        });
+
+        // Chamada manual por garantia
+        iniciarEspiaoComCracha();
+
+        // ==========================================
+        // 6. SISTEMA DE GERENCIAMENTO (Edição e Troca)
+        // ==========================================
+        function fecharModal(id) { document.getElementById(id).classList.add('hidden'); }
+        
+        async function abrirModalGerenciar(paciente) {
+            document.getElementById('gerenciarId').value = paciente.id;
+            document.getElementById('gerenciarIdAtendimentoOriginal').value = paciente.atendimento_id;
+            document.getElementById('gerenciarServico').value = paciente.servico_nome;
+            
+            document.getElementById('gerenciarNome').value = paciente.nome_paciente;
+            document.getElementById('gerenciarCpf').value = paciente.cpf || '';
+            document.getElementById('gerenciarZap').value = paciente.telefone;
+            
+            document.getElementById('boxPermuta').classList.add('hidden');
+            document.getElementById('btnEfetuarTroca').classList.add('hidden');
+
+            document.getElementById('modalGerenciar').classList.remove('hidden');
+
+            // Carrega outras datas do mesmo serviço para o select
+            const selectData = document.getElementById('gerenciarNovaData');
+            selectData.innerHTML = '<option value="">Carregando datas...</option>';
+            
+            const hoje = new Date().toISOString().split('T')[0];
+            const { data: datas } = await supabaseClient
+                .from('atendimentos_disponiveis')
+                .select('id, data_atendimento, vagas_totais, vagas_ocupadas')
+                .eq('tipo_servico', paciente.servico_nome)
+                .eq('status', 'aberto') // <-- Filtro novo: só pega dias que estão abertos de verdade
+                .gte('data_atendimento', hoje)
+                .order('data_atendimento', { ascending: true });
+
+            if(datas && datas.length > 0) {
+                selectData.innerHTML = '<option value="" disabled selected>Selecione uma data futura...</option>';
+                let encontrouOutraData = false;
+
+                datas.forEach(d => {
+                    if(d.data_atendimento !== paciente.data_agendada) { // Não mostra o dia atual dele
+                        encontrouOutraData = true;
+                        const dataBr = d.data_atendimento.split('-').reverse().join('/');
+                        
+                        // MATEMÁTICA DE VAGAS
+                        const vagasRestantes = d.vagas_totais - d.vagas_ocupadas;
+                        const estaLotado = vagasRestantes <= 0;
+                        
+                        let textoVagas = "";
+                        if (estaLotado) {
+                            textoVagas = "(LOTADO - Requer Troca)";
+                        } else if (vagasRestantes === 1) {
+                            textoVagas = "(1 vaga restante)";
+                        } else {
+                            textoVagas = `(${vagasRestantes} vagas restantes)`;
+                        }
+
+                        // A linha que estava bugada, agora perfeitamente formatada:
+                        selectData.innerHTML += `<option value="${d.id}" data-lotado="${estaLotado}" data-data="${d.data_atendimento}">${dataBr} ${textoVagas}</option>`;
+                    }
+                });
+
+                if (!encontrouOutraData) {
+                    selectData.innerHTML = '<option value="" disabled>Nenhuma outra data aberta para este serviço.</option>';
+                }
+            } else {
+                selectData.innerHTML = '<option value="" disabled>Nenhuma outra data aberta.</option>';
+            }
+        }
+
+        async function salvarDadosPessoais() {
+            const id = document.getElementById('gerenciarId').value;
+            const novoNome = document.getElementById('gerenciarNome').value;
+            const novoCpf = document.getElementById('gerenciarCpf').value;
+            const novoZap = document.getElementById('gerenciarZap').value;
+
+            const { error } = await supabaseClient.from('agendamentos_pacientes').update({
+                nome_paciente: novoNome, cpf: novoCpf, telefone: novoZap
+            }).eq('id', id);
+
+            if(!error) {
+                alert("✅ Dados salvos com sucesso!");
+                carregarAgendamentos(document.getElementById('filtroData').value);
+            } else { alert("Erro: " + error.message); }
+        }
+
+        async function verificarLotaçaoData() {
+            const selectData = document.getElementById('gerenciarNovaData');
+            const opcao = selectData.options[selectData.selectedIndex];
+            const btn = document.getElementById('btnEfetuarTroca');
+            const boxPermuta = document.getElementById('boxPermuta');
+            
+            if(!opcao.value) return;
+
+            btn.classList.remove('hidden');
+
+            if(opcao.dataset.lotado === "true") {
+                btn.innerHTML = '<i data-lucide="refresh-cw" class="w-5 h-5 inline"></i> EFETUAR PERMUTA ENTRE PACIENTES';
+                btn.classList.replace('bg-brand-blue', 'bg-orange-500');
+                btn.classList.replace('hover:bg-brand-gold', 'hover:bg-orange-600');
+                boxPermuta.classList.remove('hidden');
+                
+                // Busca quem está nesse dia para trocar
+                const selectPacientes = document.getElementById('gerenciarPacientePermuta');
+                selectPacientes.innerHTML = '<option>Carregando pacientes...</option>';
+                const { data } = await supabaseClient.from('agendamentos_pacientes').select('id, nome_paciente, telefone').eq('atendimento_id', opcao.value);
+                
+                selectPacientes.innerHTML = '';
+                if(data) data.forEach(p => { selectPacientes.innerHTML += `<option value="${p.id}">${p.nome_paciente} (${p.telefone})</option>`; });
+                
+            } else {
+                btn.innerHTML = '<i data-lucide="arrow-right-circle" class="w-5 h-5 inline"></i> MOVER PACIENTE (Vaga Livre)';
+                btn.classList.replace('bg-orange-500', 'bg-brand-blue');
+                btn.classList.replace('hover:bg-orange-600', 'hover:bg-brand-gold');
+                boxPermuta.classList.add('hidden');
+            }
+            if(window.lucide) lucide.createIcons();
+        }
+
+        async function efetuarTrocaData() {
+            const idOrigem = document.getElementById('gerenciarId').value;
+            const selectData = document.getElementById('gerenciarNovaData');
+            const opcao = selectData.options[selectData.selectedIndex];
+            
+            if(!opcao || !opcao.value) {
+                alert("Por favor, selecione uma data de destino.");
+                return;
+            }
+
+            if(opcao.dataset.lotado === "true") {
+                // CENÁRIO B: Permuta entre dois pacientes
+                const idDestino = document.getElementById('gerenciarPacientePermuta').value;
+                
+                const { error } = await supabaseClient.rpc('trocar_datas_pacientes', {
+                    p_id_agendamento_1: idOrigem, 
+                    p_id_agendamento_2: idDestino 
+                });
+                
+                if(!error) alert("✅ Troca realizada com sucesso!");
+                else alert("❌ Erro na troca: " + error.message);
+
+            } else {
+                // CENÁRIO A: Mover para vaga livre
+                const novoIdAtendimento = opcao.value;
+                const novaDataTexto = opcao.dataset.data; 
+
+                if(!novaDataTexto) {
+                    alert("Erro interno: Data de destino não encontrada.");
+                    return;
+                }
+
+                const { error } = await supabaseClient.from('agendamentos_pacientes')
+                    .update({ 
+                        atendimento_id: novoIdAtendimento, 
+                        data_agendada: novaDataTexto 
+                    })
+                    .eq('id', idOrigem);
+                    
+                if(!error) alert("✅ Paciente movido com sucesso!");
+                else alert("❌ Erro ao mover: " + error.message);
+            }
+            
+            fecharModal('modalGerenciar');
+            carregarAgendamentos(document.getElementById('filtroData').value);
+        }
+
+        // ==========================================
+        // 7. SISTEMA DE ENCAIXE MANUAL
+        // ==========================================
+        function abrirModalEncaixe() {
+            document.getElementById('encaixeServico').value = "";
+            document.getElementById('encaixeData').innerHTML = '<option value="" disabled selected>Escolha o serviço primeiro</option>';
+            document.getElementById('encaixeNome').value = "";
+            document.getElementById('encaixeCpf').value = "";
+            document.getElementById('encaixeZap').value = "";
+            document.getElementById('modalEncaixe').classList.remove('hidden');
+        }
+
+        async function buscarDatasEncaixe() {
+            const servico = document.getElementById('encaixeServico').value;
+            const select = document.getElementById('encaixeData');
+            select.innerHTML = '<option>Buscando datas...</option>';
+            
+            const hoje = new Date().toISOString().split('T')[0];
+            const { data } = await supabaseClient.from('atendimentos_disponiveis')
+                .select('id, data_atendimento, vagas_totais, vagas_ocupadas')
+                .eq('tipo_servico', servico)
+                .gte('data_atendimento', hoje)
+                .order('data_atendimento', { ascending: true });
+
+            if(data && data.length > 0) {
+                select.innerHTML = '<option value="" disabled selected>Selecione a data...</option>';
+                data.forEach(d => {
+                    const dataBr = d.data_atendimento.split('-').reverse().join('/');
+                    
+                    // NOVA MATEMÁTICA DE VAGAS
+                    const vagasRestantes = d.vagas_totais - d.vagas_ocupadas;
+                    
+                    let textoVagas = "";
+                    if (vagasRestantes <= 0) {
+                        textoVagas = " (AVISO: Agenda Cheia - Será forçado)";
+                    } else if (vagasRestantes === 1) {
+                        textoVagas = " (1 vaga restante)";
+                    } else {
+                        textoVagas = ` (${vagasRestantes} vagas restantes)`;
+                    }
+
+                    select.innerHTML += `<option value="${d.id}" data-data="${d.data_atendimento}">${dataBr}${textoVagas}</option>`;
+                });
+            } else { 
+                select.innerHTML = '<option value="" disabled>Nenhuma agenda aberta para este serviço.</option>'; 
+            }
+        }
+
+        async function salvarEncaixe() {
+            const idAtendimento = document.getElementById('encaixeData').value;
+            const servico = document.getElementById('encaixeServico').value;
+            const nome = document.getElementById('encaixeNome').value;
+            const cpf = document.getElementById('encaixeCpf').value;
+            const zap = document.getElementById('encaixeZap').value;
+            
+            const selectData = document.getElementById('encaixeData');
+            const dataAgendada = selectData.options[selectData.selectedIndex].dataset.data;
+
+            if(!idAtendimento || !nome || !zap) { alert("Preencha Nome, WhatsApp e a Data!"); return; }
+
+            const { error } = await supabaseClient.from('agendamentos_pacientes').insert([{
+                atendimento_id: idAtendimento,
+                nome_paciente: nome,
+                telefone: zap,
+                cpf: cpf,
+                servico_nome: servico,
+                data_agendada: dataAgendada,
+                email: 'encaixe@presencial.com', // <-- E-mail genérico adicionado para burlar a trava
+                ordem_chegada: 99
+            }]);
+
+            if(!error) {
+                alert("✅ Paciente inserido com sucesso via Encaixe!");
+                fecharModal('modalEncaixe');
+                carregarAgendamentos(dataAgendada); // Recarrega mostrando a data dele
+            } else {
+                alert("❌ Erro ao salvar encaixe: " + error.message);
+            }
+        }
+
+        // ==========================================
+        // GERAÇÃO DE RELATÓRIO PDF
+        // ==========================================
+        function gerarPDF() {
+            if (!window.agendamentosAtuais || window.agendamentosAtuais.length === 0) {
+                alert("❌ Não há pacientes na lista para gerar o relatório. Faça um filtro primeiro.");
+                return;
+            }
+
+            const dataFiltro = document.getElementById('filtroData').value;
+            let subtitulo = dataFiltro ? `Data: ${dataFiltro.split('-').reverse().join('/')}` : "Todos os agendamentos (Geral)";
+
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+
+            // Cabeçalho do PDF
+            doc.setFontSize(18);
+            doc.setTextColor(30, 58, 138); // brand-blue
+            doc.text("Relatório de Agendamentos - Fraternidade da Luz", 14, 20);
+            
+            doc.setFontSize(12);
+            doc.setTextColor(100, 100, 100);
+            doc.text(subtitulo, 14, 28);
+
+            // Monta as linhas da tabela
+            const colunas = [["Ordem", "Paciente", "WhatsApp", "Serviço", "Data"]];
+            const linhas = window.agendamentosAtuais.map((p, index) => {
+                const dataFormatada = p.data_agendada ? p.data_agendada.split('-').reverse().join('/') : '-';
+                return [
+                    `#${String(p.ordem_chegada || index + 1).padStart(2, '0')}`,
+                    p.nome_paciente,
+                    p.telefone,
+                    p.servico_nome,
+                    dataFormatada
+                ];
+            });
+
+            // Gera a tabela no PDF
+            doc.autoTable({
+                head: colunas,
+                body: linhas,
+                startY: 35,
+                theme: 'grid',
+                headStyles: { fillColor: [30, 58, 138] }, // brand-blue
+                styles: { fontSize: 10, cellPadding: 3 }
+            });
+
+            // Salva o arquivo
+            const nomeArquivo = dataFiltro ? `Agendamentos_${dataFiltro}.pdf` : `Agendamentos_Geral.pdf`;
+            doc.save(nomeArquivo);
+        }
+
+        // ==========================================
+        // 8. MÁSCARAS DE ENTRADA (CPF E WHATSAPP) 
+        // ==========================================
+        function mascaraTelefone(v) {
+            v = v.replace(/\D/g, "").slice(0, 11);
+            v = v.replace(/^(\d{2})(\d)/g, "($1) $2");
+            v = v.replace(/(\d)(\d{4})$/, "$1-$2");
+            return v;
+        }
+
+        function mascaraCPF(v) {
+            v = v.replace(/\D/g, "").slice(0, 11);
+            v = v.replace(/(\d{3})(\d)/, "$1.$2");
+            v = v.replace(/(\d{3})(\d)/, "$1.$2");
+            v = v.replace(/(\d{3})(\d{1,2})$/, "$1-$2");
+            return v;
+        }
+
+        // Aplica as máscaras automaticamente no modal de Novo Encaixe
+        const inEncaixeCpf = document.getElementById('encaixeCpf');
+        const inEncaixeZap = document.getElementById('encaixeZap');
+        if(inEncaixeCpf) inEncaixeCpf.addEventListener('input', function(e) { e.target.value = mascaraCPF(e.target.value); });
+        if(inEncaixeZap) inEncaixeZap.addEventListener('input', function(e) { e.target.value = mascaraTelefone(e.target.value); });
+
+        // Aplica as máscaras automaticamente no modal de Gerenciar Paciente
+        const inGerenciarCpf = document.getElementById('gerenciarCpf');
+        const inGerenciarZap = document.getElementById('gerenciarZap');
+        if(inGerenciarCpf) inGerenciarCpf.addEventListener('input', function(e) { e.target.value = mascaraCPF(e.target.value); });
+        if(inGerenciarZap) inGerenciarZap.addEventListener('input', function(e) { e.target.value = mascaraTelefone(e.target.value); });
+
+        
+    </script>
+</body>
+</html>

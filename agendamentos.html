@@ -3,115 +3,81 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Início - Fraternidade da Luz</title>
+    <title>Agendamentos - Fraternidade da Luz</title>
     
     <link rel="apple-touch-icon" sizes="180x180" href="assets/img/apple-touch-icon.png">
     <link rel="icon" type="image/png" sizes="32x32" href="assets/img/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="assets/img/favicon-16x16.png">
-    <link rel="manifest" href="assets/img/site.webmanifest">
     <link rel="shortcut icon" href="assets/img/favicon.ico">
     <meta name="theme-color" content="#1e3a8a">
 
-    <script src="https://cdn.tailwindcss.com"></script>
-    
+    <link rel="stylesheet" href="assets/css/style.css">
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
-    <script src="https://unpkg.com/lucide@latest"></script>
-    
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    fontFamily: { 
-                        sans: ['Outfit', 'sans-serif'],
-                        serif: ['Playfair Display', 'serif'] 
-                    },
-                    colors: {
-                        brand: {
-                            blue: '#1e3a8a', 
-                            gold: '#c4a469', 
-                            light: '#fdfbf7',
-                            softblue: '#e0e7ff',
-                            bordeaux: '#800000', /* Vermelho Xangô */
-                            brown: '#78350f',    /* Marrom Terra */
-                        }
-                    }
-                }
-            }
-        }
-    </script>
+    <script src="assets/js/lucide.min.js"></script>
 
     <style>
         .nav-bg { background-color: #1e3a8a; border-bottom: 4px solid #c4a469; }
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-        
-        /* Borda preta nas letras */
-        .text-stroke-black { 
-            -webkit-text-stroke: 1.5px black; 
-            text-stroke: 1.5px black; 
-            text-shadow: 2px 2px 0px rgba(0,0,0,0.2); 
-        }
-
-        /* Animação SWUP (Fluidez) */
-        .transition-fade {
-            transition: 0.4s ease-out;
-            opacity: 1;
-            transform: translateY(0);
-            filter: blur(0);
-        }
-        html.is-animating .transition-fade {
-            opacity: 0;
-            transform: translateY(15px);
-            filter: blur(5px);
-        }
+        .text-stroke-black { -webkit-text-stroke: 1.5px black; text-stroke: 1.5px black; text-shadow: 2px 2px 0px rgba(0,0,0,0.2); }
+        .transition-fade { transition: opacity 0.4s ease-out, transform 0.4s ease-out, filter 0.4s ease-out; opacity: 1; }
+        html.is-animating .transition-fade { opacity: 0; transform: translateY(15px); filter: blur(5px); }
         html.is-changing { cursor: wait; }
+        /* Ajustes de Escala Mobile (Evita o Efeito Gigante) */
+        @media (max-width: 768px) {
+            nav .h-28 { height: 5rem; } /* Emagrece a barra de navegação */
+            nav img.w-20.h-20 { width: 3.5rem; height: 3.5rem; } /* Diminui o logo */
+            .pt-36 { padding-top: 6rem; } /* Ajusta o respiro da página para colar mais na barra */
+            #psicologia .p-10, #kirlian .p-10 { padding: 1.5rem; } /* Diminui o padding interno dos cards */
+            #mobile-menu { top: 5rem !important; }
+        }
     </style>
 </head>
-<body class="bg-brand-light text-gray-800 antialiased flex flex-col min-h-screen">
+<body class="bg-brand-light text-gray-800 antialiased flex flex-col min-h-screen overflow-x-hidden">
 
-   <nav class="fixed w-full z-50 top-0 nav-bg shadow-md">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="flex justify-between items-center h-28"> 
-            
-            <a href="index.html" class="flex items-center gap-4 group">
-                <img src="assets/img/logo.jpg" alt="Logo Fraternidade" class="w-20 h-20 rounded-full shadow-lg border-2 border-brand-gold/20 transition transform group-hover:scale-105 duration-500 object-cover">
-                <div class="flex flex-col justify-center">
-                    <span class="text-brand-gold text-[10px] md:text-xs font-bold tracking-[0.15em] uppercase mb-0.5">Grupo Socorrista</span>
-                    <span class="font-bold text-lg md:text-2xl text-white tracking-wide leading-none font-serif">Fraternidade da Luz</span>
+    <nav class="fixed w-full z-50 top-0 nav-bg shadow-md">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-28"> 
+                <a href="index.html" class="flex items-center gap-4 group">
+                    <img src="assets/img/logo.jpg" alt="Logo Fraternidade" class="w-20 h-20 rounded-full shadow-lg border-2 border-brand-gold/20 transition transform group-hover:scale-105 duration-500 object-cover">
+                    <div class="flex flex-col justify-center">
+                        <span class="text-brand-gold text-[10px] md:text-xs font-bold tracking-[0.15em] uppercase mb-0.5">Grupo Socorrista</span>
+                        <span class="font-bold text-lg md:text-2xl text-white tracking-wide leading-none font-serif">Fraternidade da Luz</span>
+                    </div>
+                </a>
+                
+                <div class="hidden md:flex space-x-8 items-center" id="nav-desktop-links">
+                    <a href="index.html" class="text-white border-b-2 border-transparent pb-1 hover:text-brand-gold transition-all duration-300 font-medium text-sm tracking-wide">INÍCIO</a>
+                    <a href="sobre.html" class="text-white border-b-2 border-transparent pb-1 hover:text-brand-gold transition-all duration-300 font-medium text-sm tracking-wide">SOBRE NÓS</a>
+                    <a href="conteudos.html" class="text-white border-b-2 border-transparent pb-1 hover:text-brand-gold transition-all duration-300 font-medium text-sm tracking-wide">ESTUDOS</a>
+                    <a href="terapias.html" class="text-white border-b-2 border-transparent pb-1 hover:text-brand-gold transition-all duration-300 font-medium text-sm tracking-wide">TRABALHOS E TRATAMENTOS</a>
+                    <a href="agendamentos.html" class="text-white border-b-2 border-transparent pb-1 hover:text-brand-gold transition-all duration-300 font-medium text-sm tracking-wide">AGENDAMENTOS</a>
+                    <a href="contato.html" class="text-white border-b-2 border-transparent pb-1 hover:text-brand-gold transition-all duration-300 font-medium text-sm tracking-wide">CONTATO</a>
                 </div>
-            </a>
-            
-            <div class="hidden md:flex space-x-8 items-center">
-                <a href="index.html" class="text-white hover:text-brand-gold transition duration-300 font-medium text-sm tracking-wide">INÍCIO</a>
-                <a href="sobre.html" class="text-white hover:text-brand-gold transition duration-300 font-medium text-sm tracking-wide">SOBRE NÓS</a>
-                <a href="conteudos.html" class="text-white hover:text-brand-gold transition duration-300 font-medium text-sm tracking-wide">ESTUDOS</a>
-                <a href="terapias.html" class="text-white hover:text-brand-gold transition duration-300 font-medium text-sm tracking-wide">TRABALHOS E TRATAMENTOS</a>
-                <a href="agendamentos.html" class="text-white hover:text-brand-gold transition duration-300 font-medium text-sm tracking-wide">AGENDAMENTOS</a>
-                <a href="contato.html" class="text-white hover:text-brand-gold transition duration-300 font-medium text-sm tracking-wide">CONTATO</a>
+
+                <button id="mobile-menu-btn" class="md:hidden text-white focus:outline-none w-10 h-10 relative z-50 flex items-center justify-center">
+                    <div class="relative w-6 h-6 flex items-center justify-center">
+                        <i data-lucide="menu" id="icon-menu" class="absolute transition-all duration-500 transform rotate-0 scale-100 opacity-100"></i>
+                        <i data-lucide="x" id="icon-close" class="absolute transition-all duration-500 transform -rotate-90 scale-50 opacity-0"></i>
+                    </div>
+                </button>
             </div>
-
-            <button id="mobile-menu-btn" class="md:hidden text-brand-gold hover:text-white focus:outline-none p-2 relative z-50 transition-transform duration-500 ease-in-out">
-                <i data-lucide="menu" class="w-8 h-8 block" id="icon-menu"></i>
-                <i data-lucide="x" class="w-8 h-8 hidden" id="icon-close"></i>
-            </button>
         </div>
-    </div>
 
-    <div id="mobile-menu" class="hidden md:hidden bg-brand-blue border-t border-brand-gold/30 absolute w-full left-0 top-28 shadow-2xl z-40 origin-top animate-fade-in">
-        <div class="px-6 pt-6 pb-8 space-y-4 flex flex-col">
-            <a href="index.html" class="block text-white hover:text-brand-gold font-medium border-b border-white/10 pb-2">INÍCIO</a>
-            <a href="sobre.html" class="block text-white hover:text-brand-gold font-medium border-b border-white/10 pb-2">SOBRE NÓS</a>
-            <a href="conteudos.html" class="block text-white hover:text-brand-gold font-medium border-b border-white/10 pb-2">ESTUDOS</a>
-            <a href="terapias.html" class="block text-white hover:text-brand-gold font-medium border-b border-white/10 pb-2">TRABALHOS E TRATAMENTOS</a>
-            <a href="agendamentos.html" class="block text-white hover:text-brand-gold font-medium border-b border-white/10 pb-2">AGENDAMENTOS</a>
-            <a href="contato.html" class="block text-white hover:text-brand-gold font-medium border-b border-white/10 pb-2">CONTATO</a>
+        <div id="mobile-menu" class="hidden md:hidden bg-brand-blue border-t border-brand-gold/30 absolute w-full left-0 top-28 shadow-2xl z-40 origin-top animate-fade-in">
+            <div class="px-6 pt-6 pb-8 space-y-4 flex flex-col" id="nav-mobile-links">
+                <a href="index.html" class="block text-white hover:text-brand-gold font-medium border-b border-white/10 pb-2 transition-all duration-300">INÍCIO</a>
+                <a href="sobre.html" class="block text-white hover:text-brand-gold font-medium border-b border-white/10 pb-2 transition-all duration-300">SOBRE NÓS</a>
+                <a href="conteudos.html" class="block text-white hover:text-brand-gold font-medium border-b border-white/10 pb-2 transition-all duration-300">ESTUDOS</a>
+                <a href="terapias.html" class="block text-white hover:text-brand-gold font-medium border-b border-white/10 pb-2 transition-all duration-300">TRABALHOS E TRATAMENTOS</a>
+                <a href="agendamentos.html" class="block text-white hover:text-brand-gold font-medium border-b border-white/10 pb-2 transition-all duration-300">AGENDAMENTOS</a>
+                <a href="contato.html" class="block text-white hover:text-brand-gold font-medium border-b border-white/10 pb-2 transition-all duration-300">CONTATO</a>
+            </div>
         </div>
-    </div>
-</nav>
+    </nav>
 
-<main id="swup" class="transition-fade pt-36 pb-20 px-4 flex-grow flex flex-col">
-        <div class="max-w-5xl mx-auto space-y-10">
-            
+    <main id="swup" class="transition-fade pt-36 pb-20 px-4 flex-grow flex flex-col">
+        <div class="max-w-5xl mx-auto space-y-10 w-full">
             <div class="text-center mb-10">
                 <div class="w-16 h-1 bg-brand-gold mx-auto mb-6 rounded-full opacity-60"></div>
                 <h1 class="text-4xl font-serif text-brand-blue tracking-tight">Agendamento Fraterno</h1>
@@ -137,7 +103,7 @@
                       <span style="margin-right: 8px;">🎽</span> Trajar camisetas regata, sem manga ou decotadas
                     </li>
                     <li style="background-color: #ffcdd2; padding: 10px; border-radius: 4px; display: flex; align-items: center;">
-                      <span style="margin-right: 8px;">👙</span> Trajar roupas de banho ou transparentes
+                      <span style="margin-right: 8px;">👗</span> Trajar roupas coladas ou transparentes
                     </li>
                     <li style="background-color: #ffcdd2; padding: 10px; border-radius: 4px; display: flex; align-items: center; font-weight: bold;">
                       <span style="margin-right: 8px;">🚭</span> Fumar no local (cigarros, vapes ou assemelhados)
@@ -147,16 +113,13 @@
                     </li>
                   </ul>
                   <p style="margin-bottom: 0; font-size: 0.9em; border-top: 1px solid #e57373; padding-top: 10px; margin-top: 15px;">
-                    <strong>⚠️ ATENÇÃO:</strong> O descumprimento destas normas impedirá o acesso ou a permanência no recinto.
+                    <strong>⚠️ ATENÇÃO:</strong> O descumprimento destas normas impedirá o acesso ou a permanência na casa.
                   </p>
                 </div>
             </section>
 
             <section id="psicologia" class="scroll-mt-36 bg-white rounded-3xl overflow-hidden shadow-sm border-2 border-brand-blue/50 flex flex-col md:flex-row relative transition duration-500 hover:shadow-md group">
-    
-    <div class="absolute top-0 right-0 bg-brand-blue text-white text-[11px] font-bold px-4 py-2 rounded-bl-xl uppercase tracking-wider">
-        Agendamento Direto
-    </div>
+                <div class="absolute top-0 right-0 bg-brand-blue text-white text-[11px] font-bold px-4 py-2 rounded-bl-xl uppercase tracking-wider">Agendamento Direto</div>
                 <div class="p-10 md:w-2/5 flex flex-col justify-center items-center text-center border-b md:border-b-0 md:border-r border-brand-blue/10 bg-blue-50/30">
                     <div class="w-24 h-24 bg-white rounded-full flex items-center justify-center mb-6 shadow-sm border border-blue-100 group-hover:scale-105 transition duration-500">
                         <i data-lucide="brain" class="w-12 h-12 text-brand-blue/80"></i>
@@ -170,8 +133,8 @@
                         Atendimento profissional com psicólogos voluntários. Um espaço seguro para suas questões emocionais.
                         <br><span class="font-bold text-brand-blue">Não exige foto Kirlian.</span>
                     </p>
-                    <button onclick="alert('Aqui abrirá o Chatbot para Psicologia')" class="px-8 py-4 bg-white border-2 border-brand-blue text-brand-blue rounded-full hover:bg-brand-blue hover:text-white transition duration-300 w-full md:w-auto self-start text-sm font-bold tracking-wide flex items-center gap-3 shadow-sm">
-                        VER HORÁRIOS DISPONÍVEIS <i data-lucide="calendar" class="w-5 h-5"></i>
+                    <button onclick="window.abrirModal('Atendimento Psicológico')" class="px-8 py-4 bg-white border-2 border-brand-blue text-brand-blue rounded-full hover:bg-brand-blue hover:text-white transition duration-300 w-full md:w-auto self-start text-sm font-bold tracking-wide flex items-center justify-center gap-3 shadow-sm">
+                        VER DIAS DISPONÍVEIS <i data-lucide="calendar" class="w-5 h-5"></i>
                     </button>
                 </div>
             </section>
@@ -191,25 +154,91 @@
                         <ul class="text-sm space-y-3 font-medium">
                             <li class="flex items-center gap-3">
                                 <i data-lucide="calendar-clock" class="w-5 h-5 text-mystic-glow"></i> 
-                                <span>Abertura: Toda <strong>Quarta-feira</strong>.</span>
+                                <span>Abertura: Novas vagas todo <strong>Sábado </strong> às 00:00.</span>
                             </li>
                             <li class="flex items-center gap-3">
                                 <i data-lucide="users-2" class="w-5 h-5 text-mystic-glow"></i> 
-                                <span>Vagas: Limitadas a <strong>30 pessoas por quarta-feira</strong>.</span>
+                                <span>Vagas: Limitadas a <strong>20 pessoas por quarta-feira</strong>.</span>
                             </li>
                         </ul>
                     </div>
-                    <button onclick="alert('Aqui abrirá o Chatbot da Fila')" class="px-8 py-4 bg-gradient-to-r from-mystic-mid to-mystic-deep hover:from-mystic-glow hover:to-mystic-mid transition-all duration-500 text-white rounded-full w-full shadow-lg text-sm font-bold tracking-wide flex items-center justify-center gap-3 transform hover:-translate-y-0.5 border border-mystic-glow/30">
+                    <button onclick="window.abrirModal('Foto Kirlian')" class="px-8 py-4 bg-gradient-to-r from-mystic-mid to-mystic-deep hover:from-mystic-glow hover:to-mystic-mid transition-all duration-500 text-white rounded-full w-full shadow-lg text-sm font-bold tracking-wide flex items-center justify-center gap-3 transform hover:-translate-y-0.5 border border-mystic-glow/30" style="background-color: #581c87;">
                         AGENDAR FOTO KIRLIAN <i data-lucide="arrow-right" class="w-5 h-5"></i>
                     </button>
                 </div>
                 <div class="md:w-2/5 relative min-h-[300px] md:min-h-full">
                     <div class="absolute inset-0 w-full h-full bg-mystic-deep/20 flex items-center justify-center">
-                         <img src="assets/img/kirlian-destaque.jpeg" alt="Bioeletrografia" class="absolute inset-0 w-full h-full object-cover">
+                         <img src="assets/img/kirlian-destaque.jpeg" alt="Bioeletrografia" class="absolute inset-0 w-full h-full object-contain md:object-cover bg-[#0d0720] md:bg-transparent">
                     </div>
                 </div>
             </section>
+        </div>
 
+        <div id="modalAgendamento" class="fixed inset-0 z-[100] flex items-start md:items-center justify-center pt-4 md:pt-0 pb-4 hidden overflow-y-auto">
+            <div class="absolute inset-0 bg-brand-blue/90 backdrop-blur-sm" onclick="window.fecharModal()"></div>
+            
+            <div class="bg-white rounded-3xl p-6 md:p-8 max-w-2xl w-[95%] max-h-[90vh] overflow-y-auto relative z-10 shadow-2xl transform transition-all duration-300 scale-95 opacity-0 no-scrollbar" id="caixaModal">
+                
+                <button onclick="window.fecharModal()" class="absolute top-5 right-5 text-gray-400 hover:text-red-500 transition">
+                    <i data-lucide="x" class="w-6 h-6"></i>
+                </button>
+
+                <div class="text-center mb-6">
+                    <div class="w-16 h-16 bg-brand-gold/10 text-brand-gold rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i data-lucide="clipboard-edit" class="w-8 h-8"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold text-brand-blue">Ficha de Agendamento</h3>
+                    <p class="text-brand-gold font-bold text-sm mt-1 uppercase tracking-wider" id="nomeServicoModal">Serviço Selecionado</p>
+                </div>
+
+                <form id="formPaciente" class="space-y-4 text-left" novalidate>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="md:col-span-2">
+                            <label class="block text-sm font-bold text-gray-700 mb-1">Nome Completo <span class="text-red-500">*</span></label>
+                            <input type="text" id="nome" required class="w-full p-3 border border-gray-200 rounded-xl outline-none focus:ring-2 focus:ring-brand-blue bg-gray-50 text-sm transition-colors">
+                            <span class="text-red-500 text-xs hidden mt-1" id="erro-nome">Por favor, preencha seu nome completo.</span>
+                        </div>
+                        <div class="md:col-span-2">
+                            <label class="block text-sm font-bold text-gray-700 mb-1">E-mail <span class="text-red-500">*</span></label>
+                            <input type="email" id="email" required class="w-full p-3 border border-gray-200 rounded-xl outline-none focus:ring-2 focus:ring-brand-blue bg-gray-50 text-sm transition-colors" placeholder="seu@email.com">
+                            <span class="text-red-500 text-xs hidden mt-1" id="erro-email">Insira um e-mail válido.</span>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-bold text-gray-700 mb-1">WhatsApp <span class="text-red-500">*</span></label>
+                            <input type="tel" id="whatsapp" required class="w-full p-3 border border-gray-200 rounded-xl outline-none focus:ring-2 focus:ring-brand-blue bg-gray-50 text-sm transition-colors" placeholder="(81) 90000-0000">
+                            <span class="text-red-500 text-xs hidden mt-1" id="erro-whatsapp">O WhatsApp é obrigatório.</span>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-bold text-gray-700 mb-1">CPF <span class="text-red-500">*</span></label>
+                            <input type="text" id="cpf" required class="w-full p-3 border border-gray-200 rounded-xl outline-none focus:ring-2 focus:ring-brand-blue bg-gray-50 text-sm transition-colors" placeholder="000.000.000-00">
+                            <span class="text-red-500 text-xs hidden mt-1" id="erro-cpf">O CPF é obrigatório.</span>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
+                        <div>
+                            <label class="block text-sm font-bold text-gray-700 mb-1">Escolha o Dia do Atendimento <span class="text-red-500">*</span></label>
+                            <select id="dataAgendamento" required class="w-full p-3 border-2 border-brand-blue/30 rounded-xl outline-none focus:border-brand-blue bg-blue-50/30 text-sm font-bold text-brand-blue transition-colors">
+                                <option value="" disabled selected>Selecione um dia livre...</option>
+                            </select>
+                            <span class="text-red-500 text-xs hidden mt-1" id="erro-dataAgendamento">Selecione uma data para o atendimento.</span>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-bold text-gray-700 mb-1">Observações Adicionais</label>
+                            <input type="text" id="observacoes" class="w-full p-3 border border-gray-200 rounded-xl outline-none focus:ring-2 focus:ring-brand-blue bg-gray-50 text-sm" placeholder="Algo que precisamos saber?">
+                        </div>
+                    </div>
+
+                    <div class="bg-orange-50 p-3 rounded-lg border border-orange-100 flex gap-3 items-start mt-4">
+                        <i data-lucide="alert-triangle" class="w-5 h-5 text-orange-600 shrink-0 mt-0.5"></i>
+                        <p class="text-xs text-orange-800 leading-relaxed font-medium">O atendimento ocorre das 18h30 às 20h30. Este agendamento não marca um horário exato, apenas garante o seu atendimento por <strong>ordem de chegada</strong> no dia escolhido.</p>
+                    </div>
+
+                    <button type="submit" id="btnConfirmar" class="w-full py-4 bg-brand-blue text-white rounded-xl font-bold shadow-md hover:bg-brand-gold transition duration-300 flex items-center justify-center gap-2 mt-2">
+                        CONFIRMAR AGENDAMENTO <i data-lucide="check" class="w-5 h-5"></i>
+                    </button>
+                </form>
+            </div>
         </div>
     </main>
 
@@ -220,7 +249,7 @@
                 <div class="flex flex-col">
                     <span class="text-brand-gold/80 text-xs font-bold tracking-[0.2em] uppercase mb-1">Grupo Socorrista</span>
                     <span class="text-white text-2xl font-bold tracking-wide leading-none font-serif">Fraternidade da Luz</span>
-                    <span class="text-white/40 text-[10px] mt-2 font-light tracking-wider">Cuidando do corpo e da alma desde 2017</span>
+                    <span class="text-white/40 text-[10px] mt-2 font-light tracking-wider">Umbanda Omolokô • Nação Nagô</span>
                 </div>
             </div>
             <div class="flex flex-col items-center md:items-end gap-4">
@@ -228,7 +257,7 @@
                     <a href="https://www.instagram.com/gsfraternidadedaluz/" target="_blank" class="text-white/60 hover:text-brand-gold transition transform hover:scale-110"><i data-lucide="instagram" class="w-6 h-6"></i></a>
                     <a href="https://www.facebook.com/groups/126930474589655/" target="_blank" class="text-white/60 hover:text-brand-gold transition transform hover:scale-110"><i data-lucide="facebook" class="w-6 h-6"></i></a>
                     <a href="mailto:gsfraternidadedaluz@gmail.com" class="text-white/60 hover:text-brand-gold transition transform hover:scale-110"><i data-lucide="mail" class="w-6 h-6"></i></a>
-                    <a href="https://api.whatsapp.com/message/B2BBNVXVBGCKD1?autoload=1&app_absent=0" target="_blank" class="text-green-400 hover:text-green-300 transition transform hover:scale-110"><i data-lucide="message-circle" class="w-6 h-6"></i></a>
+                    <a href="https://wa.me/558132993100" target="_blank" class="text-green-400 hover:text-green-300 transition transform hover:scale-110"><i data-lucide="message-circle" class="w-6 h-6"></i></a>
                 </div>
                 <p class="text-xs text-white/20 font-light text-right">
                     © 2024 Todos os direitos reservados.<br>
@@ -237,105 +266,10 @@
             </div>
         </div>
     </footer>
-<script src="https://unpkg.com/swup@4"></script>
 
-<script>
-    function initApp() {
-        // 1. Recria ícones
-        if(window.lucide) lucide.createIcons();
-        
-        // 2. Marca link ativo na Nav
-        const path = window.location.pathname;
-        const page = path.split("/").pop() || 'index.html';
-        
-        document.querySelectorAll('nav a').forEach(link => {
-            if (link.querySelector('img')) return;
-            
-            link.classList.remove('text-brand-gold', 'border-b-2', 'border-brand-gold', 'pb-1');
-            link.classList.add('text-white');
-            
-            const href = link.getAttribute('href');
-            if (href && (href === page || (page === '' && href === 'index.html'))) {
-                link.classList.add('text-brand-gold', 'border-b-2', 'border-brand-gold', 'pb-1');
-                link.classList.remove('text-white');
-            }
-        });
-
-        // 3. Lógica do Menu Mobile (CORRIGIDA)
-        const btn = document.getElementById('mobile-menu-btn');
-        const menu = document.getElementById('mobile-menu');
-        
-        if(btn && menu) {
-            // Clona o botão para limpar eventos antigos
-            const newBtn = btn.cloneNode(true);
-            btn.parentNode.replaceChild(newBtn, btn);
-            
-            // Seleciona os ícones DENTRO do novo botão
-            // Usamos querySelector para garantir que pegamos os elementos certos
-            const iconMenu = newBtn.querySelector('[data-lucide="menu"]'); 
-            const iconClose = newBtn.querySelector('[data-lucide="x"]');
-
-            // --- FUNÇÃO CENTRAL DE FECHAR (FAZ TUDO) ---
-            const closeMenu = () => {
-                // 1. Esconde a gaveta
-                menu.classList.add('hidden');
-                
-                // 2. Gira o botão de volta para a direita (posição original)
-                newBtn.classList.remove('-rotate-180'); 
-                
-                // 3. Troca o X pelo Hambúrguer
-                if(iconClose) iconClose.classList.add('hidden');
-                if(iconMenu) iconMenu.classList.remove('hidden');
-            };
-
-            // --- FUNÇÃO CENTRAL DE ABRIR ---
-            const openMenu = () => {
-                menu.classList.remove('hidden');
-                newBtn.classList.add('-rotate-180'); // Gira para esquerda
-                if(iconMenu) iconMenu.classList.add('hidden');
-                if(iconClose) iconClose.classList.remove('hidden');
-            };
-
-            // Evento 1: Clique no Botão
-            newBtn.addEventListener('click', (e) => {
-                e.stopPropagation(); // Impede que o clique conte como "clique fora"
-                const isOpen = !menu.classList.contains('hidden');
-                
-                if (isOpen) {
-                    closeMenu();
-                } else {
-                    openMenu();
-                }
-            });
-
-            // Evento 2: Clique Fora (No documento)
-            // Removemos listener anterior para não duplicar
-            if (window.clickOutsideHandler) {
-                document.removeEventListener('click', window.clickOutsideHandler);
-            }
-
-            window.clickOutsideHandler = (e) => {
-                // Se o menu estiver ABERTO... E o clique NÃO for no menu... E NÃO for no botão...
-                if (!menu.classList.contains('hidden') && !menu.contains(e.target) && !newBtn.contains(e.target)) {
-                    closeMenu(); // <--- CHAMA A FUNÇÃO QUE GIRA O ÍCONE DE VOLTA
-                }
-            };
-
-            document.addEventListener('click', window.clickOutsideHandler);
-        }
-    }
-
-    const swup = new Swup({
-        containers: ["#swup"],
-        animateHistoryBrowsing: true
-    });
-
-    initApp();
-
-    swup.hooks.on('content:replace', () => {
-        initApp();
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-    });
-</script>
+    <script src="assets/js/Swup.umd.js"></script>
+    <script src="assets/js/supabase-js@2.js"></script>
+    <script src="assets/js/main.js"></script>
+    
 </body>
 </html>

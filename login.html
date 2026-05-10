@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="pt-br" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Restrito - Fraternidade da Luz</title>
+    
+    <link rel="apple-touch-icon" sizes="180x180" href="assets/img/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="assets/img/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="assets/img/favicon-16x16.png">
+    <link rel="shortcut icon" href="assets/img/favicon.ico">
+    <meta name="theme-color" content="#1e3a8a">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    <script src="assets/js/lucide.min.js"></script>
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Outfit', 'sans-serif'], serif: ['Playfair Display', 'serif'] },
+                    colors: {
+                        brand: {
+                            blue: '#1e3a8a', gold: '#c4a469', light: '#fdfbf7',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .transition-fade { transition: 0.4s ease-out; opacity: 1; transform: translateY(0); filter: blur(0); }
+        html.is-animating .transition-fade { opacity: 0; transform: translateY(15px); filter: blur(5px); }
+    </style>
+</head>
+<body class="bg-brand-light text-gray-800 antialiased min-h-screen flex items-center justify-center relative overflow-hidden">
+    
+    <div class="absolute top-[-10%] left-[-10%] w-96 h-96 bg-brand-blue/10 rounded-full blur-3xl z-0"></div>
+    <div class="absolute bottom-[-10%] right-[-10%] w-96 h-96 bg-brand-gold/20 rounded-full blur-3xl z-0"></div>
+
+    <main id="swup" class="transition-fade w-full max-w-md p-4 relative z-10">
+        <div class="bg-white rounded-3xl shadow-2xl border border-gray-100 p-8 md:p-10 text-center">
+            
+            <div class="flex justify-center mb-6">
+                <img src="assets/img/logo.jpg" alt="Logo" class="w-24 h-24 rounded-full border-2 border-brand-gold/50 shadow-md">
+            </div>
+            
+            <h1 class="text-2xl font-serif font-bold text-brand-blue mb-2">Painel de Controle</h1>
+            <p class="text-gray-500 text-sm mb-8">Acesso restrito à administração</p>
+
+            <form id="loginForm" class="space-y-5 text-left">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">E-mail</label>
+                    <div class="relative">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <i data-lucide="mail" class="w-5 h-5 text-gray-400"></i>
+                        </div>
+                        <input type="email" id="email" required class="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-brand-gold focus:border-brand-gold outline-none transition bg-gray-50 focus:bg-white" placeholder="admin@fraternidade.com">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Senha</label>
+                    <div class="relative">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <i data-lucide="lock" class="w-5 h-5 text-gray-400"></i>
+                        </div>
+                        <input type="password" id="senha" required class="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-brand-gold focus:border-brand-gold outline-none transition bg-gray-50 focus:bg-white" placeholder="••••••••">
+                    </div>
+                </div>
+
+                <button type="submit" id="btnEntrar" class="w-full py-4 bg-brand-blue text-white rounded-xl font-bold hover:bg-brand-gold transition duration-300 shadow-lg flex justify-center items-center gap-2 mt-4">
+                    ENTRAR <i data-lucide="arrow-right" class="w-5 h-5"></i>
+                </button>
+            </form>
+
+            <div class="mt-8 text-xs text-gray-400">
+                <a href="index.html" data-no-swup class="hover:text-brand-blue flex items-center justify-center gap-1 transition">
+                    <i data-lucide="arrow-left" class="w-3 h-3"></i> Voltar ao site público
+                </a>
+            </div>
+        </div>
+    </main>
+
+    <script src="assets/js/Swup.umd.js"></script>
+    <script src="assets/js/supabase-js@2.js"></script>
+
+    <script>
+        // Inicializa o Supabase
+        const supabaseUrl = 'https://itluckffjkbpkzorobwa.supabase.co';
+        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Iml0bHVja2ZmamticGt6b3JvYndhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzA5MzE5MDMsImV4cCI6MjA4NjUwNzkwM30.xZfVUPFyGI9t5MoEO5oBssAp0spo-Ybf_WkK-b3b8q0';
+        const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
+
+        function initLogin() {
+            if(window.lucide) lucide.createIcons();
+            
+            const form = document.getElementById('loginForm');
+            if(form) {
+                form.addEventListener('submit', async (e) => {
+                    e.preventDefault();
+                    
+                    const btn = document.getElementById('btnEntrar');
+                    const originalText = btn.innerHTML;
+                    btn.innerHTML = '<i data-lucide="loader-2" class="w-5 h-5 animate-spin"></i> AUTENTICANDO...';
+                    if(window.lucide) lucide.createIcons();
+
+                    const email = document.getElementById('email').value;
+                    const senha = document.getElementById('senha').value;
+
+                    // Tenta fazer o login oficial no Supabase
+                    const { data, error } = await supabaseClient.auth.signInWithPassword({
+                        email: email,
+                        password: senha,
+                    });
+
+                    if (error) {
+                        alert("Acesso negado: E-mail ou senha incorretos.");
+                        btn.innerHTML = originalText;
+                        if(window.lucide) lucide.createIcons();
+                    } else {
+                        // Sucesso! Vai para o painel
+                        window.location.href = 'painel.html'; 
+                    }
+                });
+            }
+        }
+        
+        // Bloqueia quem já está logado de ver a tela de login
+        async function checarSessao() {
+            const { data: { session } } = await supabaseClient.auth.getSession();
+            if (session) {
+                window.location.href = 'painel.html'; // Joga pro painel direto
+            }
+        }
+        
+        checarSessao();
+
+        const swup = new Swup({ containers: ["#swup"] });
+        initLogin();
+        swup.hooks.on('content:replace', initLogin);
+    </script>
+</body>
+</html>
